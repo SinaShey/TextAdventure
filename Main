@@ -1,0 +1,2275 @@
+package game;
+
+import java.util.Random;
+import java.util.Scanner;
+/**
+ * 
+ * @author Author Sina Sheykholeslami, 2239380
+ * Projekt Informatik Labor 2
+ */
+public class Main {
+	
+	static String spielerItems [] = {"Frei","Frei","Frei","Frei","Frei","Frei","Frei","Frei","Frei","Frei","Frei","Frei","Frei"};
+
+	@SuppressWarnings("resource")
+	public static void main(String [] args)
+	{
+		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		/* Author Sina Sheykholeslami, 2239380 || Media Systems || <Informatik 1/2 Projekt> 																							
+		 *																																												*
+		 *	Das ist ein Textadventurespiel. Das Spiel fängt damit an, dass man sich zwischen 4 Rassen entscheiden muss.(Mensch, Orc, Elf, Vampier) 										*
+		 *	Jede Rasse hat seine besondere Eigenschaft. Der Mensch, zum Beispiel, hat es einfacher Items zu finden. 																	*
+		 *	Wogegen der Elf eine bessere Chance hat, einen kritischen Treffer gegen Feinde zu landen und Angriffen auszuweichen.														*
+		 *	Des Weiteren sind Items ein ausschlaggebender Teil dieses Spieles. Es gibt Heiltränke, die dem Spieler Leben geben, es gibt verzauberte Kristalle,							*
+		 *	die dem Gegner erhöhten Schaden zufügen und es gibt Items die man auf Wegen finden kann, die zusätzliche Angriffskraft gibt und vieles mehr.								*
+		 *	Einige Items kann man bei seinem Händler kaufen.																															*
+		 *	Es gibt 3 verschiedene Händler. Rüstungshandel für mehr Leben, Schwerthandel für mehr Angriffskraft und Schwarzhandel 														*
+		 *	für zusätzliche Dunkelkristalle und weiteren magischen Items.																												*		
+		 *	Man gewinnt das Spiel, indem man das 10te Level erreicht hat. Erfahrung bekommt man nur durch das Kämpfen mit Monstern.														*
+		 *	Es gibt normale Monster und spezielle Monster. Die normalen Monster können nur Angreifen, während die speziellen Monster besondere Fähigkeiten besitzen.					*
+		 *																																												*
+		 *	Es gibt ebenfalls Quests, die der Spieler erledigen muss, falls er sie findet:																								*
+		 *																																												*
+		 *  1.Quest Die SchlüsselQuest:																																					*
+		 *  Ein Mann hat den Schlüssel der Stadt verloren, weil er von Dieben ausgeraubt wurde. 																						*
+		 *  Der Spieler muss gegen den Dieb kämpfen, wenn er ihn gefunden hat und den Schlüssel zurück bringen. Ihm wird eine Belohnung hinterlegt, sobald er die Quest erledigt hat	*
+		 *  																																											*
+		 *  2.Quest Vampierknochen:																																						*
+		 *  Der Spieler begegnet einem Alchemisten, der eine letzte Zutat benötigt: Vampierknochen. 																					*
+		 *  Der Spieler muss hierbei, ähnlich wie bei der ersten Quest, einen bestimmten Gegner töten. Hier muss es ein Vampier sein. Der Spieler stiehlt dem Vampier seine Knochen		*
+		 *  und bringt dem Alchemisten seine noch fehlende Zutat.																														*
+		 *  																																											*
+		 *  3.Quest Die Laterne:																																						*
+		 *  Der	Spieler begegnet einem Tunnelarbeiter, der auf Grund seiner schlechten Augen nicht gut arbeiten kann. Er braucht eine Laterne um weiter arbeiten zu können.				*
+		 *  Um die Laterne besorgen zu können, muss der Spieler zu dem Freund des Tunnelarbeiters gehen. Es handelt sich hierbei um den Schwerthändler. Hat er den besagten Gegenstand	*
+		 *  gekauft, muss er die Laterne nur noch dem Tunnelarbeiter geben.																												*
+		 *  																																											*
+		 *  4.Quest Der Magierlehrling:																																					*								
+		 *  Auf dem Weg begegnet der Spiele einen Jungen Zauberer, der ein viel mächtigerer Zauberer sein möchte. Doch um zu üben, benötigt er einen Zauberstab, den er sich nicht 		*
+		 *  leisten kann. Der Spieler muss dem Jungen einen Zauberstab bei dem dunklen Händler, der schwarze Zauber und Gegenstände verkauft, besorgen. Sobald er den Stab erworben hat,*
+		 *  muss er dem Jungen den Stab übermitteln.																																	*		
+		 *																																												*
+		 *	Anmerkungen zum Projekt:																																					*
+		 *	Widerstandsfähigkeit:																																						*
+		 *	Ich habe zunächst vorgehabt dieses Attribut einzusetzten. Es hat auch so funktioniert wie es gedacht war. Die Idee dahinter war, dass der Spieler							*
+		 *	einen Prozentsatz weniger Schaden erhalten würde(zum Beispiel 20%). Aber am Ende habe ich aus guten Gründen entschieden, Wiederstandsfähigkeit raus zu nehmen.				*
+		 *	Zum einen, weil die Wahrscheinlichkeit ein Item zu finden in diesem Spiel relativ hoch ist + Handel. Und man erhöht die Schadensverringerung, wenn man sich das				*
+		 *	Schadensverringernde Item kauft/findet und am Ende steht der Spieler mit 100% da. Das würde keinen Sinn ergeben, da die Gegner bewusst schwerer sein sollten.				*
+		 *	Dann habe ich es versucht den Gegnern dieses Attribut pro Level zu geben, was aber am Ende ebenfalls schief ging.															*
+		 *	Der Orc/Troll der von dieser Eigenschaft profitieren sollte,																												*
+		 *	erhält nun Bonusregeneration und zusätzliche Angriffskraft. Jedoch erhält man 10% Wiederstandsfähigkeit, wenn man genug Kraftattribute sammelt (Wert ist nicht veränderbar).*
+		 *																																												*
+		 *	Attribute:																																									*
+		 *  Der Spieler bzw. sein Charakter hat gewisse Attribute: Kraft, Geschick und Intelligenz. Diese sind besonders wichtig, falls man im Besitz von gewissen Items				*
+		 *	kommen will. Zum Beispiel kann ein Orc, dessen Geschick zu klein ist, keinen Jagdbogen beim Händler kaufen, bis er die benötigte Geschicklichkeit aufbringt.				*
+		 *	Oder ein Elf kann keinen verzauberten Ring kaufen, da er nicht Intelligent genug ist ihn einzusetzten. Darüber hinaus wird dem Spieler eine zusatz Fähigkeit verliehen,		*
+		 *  sobald er genug Attributpunkte gesammelt hat. (10 % Wiederstandsfähigkeit bei 8 Kraftattributspunkten, zum Beispiel)														*
+		 *	Attribute werden durch 2 Dinge erhöht. Einerseits durch Levelaufstieg und andererseits durch einen bestimmten Ort, welchen er erst per Zufallsprinzip findet.				*
+		 *																																												*
+		 *	Itemliste:																																									*
+		 *  Es wurde eine Extra Klasse 'ItemListe' erstellt. Diese Klasse ist dazu da, dem Spieler ein Fenster öffnen zu lassen, damit er seine 										*
+		 *	schon gekauften Items sehen kann.																																			*
+		 *																																												*
+		 */																																												
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+	// OBJEKTE
+		Random r = new Random();
+		Scanner s = new Scanner(System.in);
+		
+		boolean gameRunning = true;
+		
+	// VARIABLEN
+		//Gegner				
+		String [] gegnerArray ={//Normale Gegner
+								"Assassine",
+								"Dunkelorc",
+								"Untoter",
+								"Verbannter",
+								"Zerstörer",
+								"Riese",
+								//Quest Gegner
+								"Vampier", //Hat ein Item für eine Quest
+								"Dieb", // Hat ein Item für eine Quest
+								//Gegner mit Fähigkeiten
+								"Verbannter",
+								"giftige Spinne", //Gift
+								"schwarzer Zauberer", // Verursacht zusätzlich magischen Schaden
+								"Dunkelelf", // Flüchten ist nicht möglich
+								"Geist", // Stiehlt Leben
+								"Steingolem", //Schadenswiderstand und Lebensraub nicht möglich
+								"Verbannter", // Hat Chance auf einmaligen Todestreffer
+								"göttliches Wesen" // Immun gegen Angriffe
+								};
+								
+		//Wege							 *Wahrscheinlichkeit, dass Weg XXX erscheint*
+		String [] wegArray = {
+							  "Kämpfen", 		 // 29,41% 
+							  "Kreuzung",		 // 17,64%
+							  "Felsweg", 	   	 // 5.88%
+							  "Tunnel", 		 // 11.76%
+							  "Bibliothek",		 // 5.88%
+							  "Kämpfen",
+							  "Kreuzung",
+							  "Schießstand",	 // 5.88%
+							  "Schwerthandel",   // 5.88%
+							  "Kämpfen", 
+							  "Rüstungshandel",  // 5.88%
+							  "Tunnel", 
+							  "Kreuzung", 
+						 	  "Kämpfen", 
+						 	  "Schwarzhandel",   // 5.88%
+							  "Kämpfen", 
+							  "Truhe",           // 5.88%
+						 	  }; 
+		
+		//GegnerWerte
+			int gegnerMaxAD = 250;
+			int gegnerMaxHP = 400;
+		//Spezielle Gegner
+			int gegnerSpinnenGift = 25;
+			int gegnerZaubererSchden = 25;
+			int gegnerGeistLebensraub = 25;
+			int gegnerVerbanntChance = 5;
+			int gegnerVerbanntSchaden = 850;
+			int gegnerVerbanntStrafe = 25;
+			double steingolem = 10;
+			
+		//Player 
+			String playerRace = "";
+			int playerAD = 0;
+			int playerHP = 0;
+			int maxLeben = 9999;
+		//PlayerAttribute
+			int geschick = 0;
+			int kraft = 0;
+			int intelligenz = 0;
+		//PlayerLevel
+			int playerLevel = 1;
+			int playerMaxXP = 100;
+			int playerXP = 0;
+		//PlayerKrit
+			int playerKritAD = 750;
+			int playerKritChance = 0;
+		//Player AusweichChance
+			int playerEvadeChance = 0;
+		//PlayerLebensraub und Regeneration
+			double playerLebensraub = 0;
+			int    playerRegeneration = 0;
+		//Fluchchance
+			int spielerFluchtchance = 80;
+			
+		//Heiltrank
+			int potionAnzahl = 2;
+			int potionMaxAnzahl = 10;
+			int potionHeal = 50;
+			int potionChance = 90;
+			
+		//Kristall
+			int dunkelKristallAnzahl = 0;
+			int dunkelKristallAD = 100000;
+			int dunkelKristallChance = 10;
+			
+		//Items									 
+			String [] itemArray = {"Metallstück", "Rüstung", "Talisman", "Schuhe", "Vampierzahn", "Hasenpfote", "Teil eines Zauberkompass", "Raub", "Schlüssel"};
+			int itemZahl = 0;
+			int schlüsselAnzahl = 0;
+			boolean schlüssel = true;
+			boolean schlüsselEnde = false;
+			boolean hammer = false;
+			int itemChance = 85;
+			int n = 0;
+			
+		//Scharzhändler
+			boolean ring = false;
+				int	magieSchaden = 50 * playerLevel;
+			boolean vampierZeptar = false;
+			boolean formwandler = false;
+		//Rüstungshandel
+			boolean kleinRüstung = false;
+			boolean großRüstung= false;
+			boolean handschuhe = false;
+			boolean armreif = false;
+		//Waffenhandel
+			boolean dolch = false;
+			boolean riesenSchwert = false;
+			boolean jagdBogen = false;
+			boolean axt = false;
+			boolean todesKlinge = false;
+			
+		//RassenWahl
+			boolean orc = false;
+			boolean elf = false;
+			boolean mensch = false;
+			boolean vampier = false;
+			boolean formgestallt = false;
+			boolean gg = true;
+			
+		//Fähigkeiten
+			int skillZahl = 0;
+			String [] spielerSkills = {"Wiederstandsfähigkeit: Nicht gelernt",
+									   "Erfolgreiche Flucht: Nicht gelernt",
+									   "Stehlen: Nicht gelernt",
+									   "Extra Taschen: Nicht gelernt",
+									   "Heiltrankstärke: Nicht gelernt",
+									   "Glückspilz: Nicht gelernt"
+									  };
+			//Kraft
+			boolean schadenVerringern = false;
+			//Geschick
+			boolean stehlen = false;
+			//Intelligenz
+			boolean flüchten = false; 
+			//Level
+			boolean extraTaschen = false;
+			boolean extraLeben = false;
+			boolean glück = false;
+			
+		//Quests
+			int questChance = 65;
+			int questZahl = 0;
+			//Kreuzung
+			boolean stadtSchlüssel = false; //Muss den Stadtschlüssel bei einem Kampf mit einem Monster erhalten
+				boolean stadtSchlüsselAngefangen = false;
+				boolean stadtSchlüsselBeendet = false;
+			boolean vampierKnochen = false; //Muss den Vampierknochen bei einem Händler abkaufen
+				boolean vampierKnochenAngefangen = false;
+				boolean vampierKnochenBeendet = false;
+//			//Tunnel
+			boolean laterne = false; // Muss eine Laterne beim Händler kaufen
+				boolean laterneAngefangen = false;
+				boolean laterneBeendet = false;
+			boolean zauberStab = false; // Muss beim Händler gekauft werden
+				boolean zauberStabAngefangen = false;
+				boolean zauberStabBeendet = false;
+			
+		//QuestArray	
+		String [] questArray = 		  {"Schlüssel","Vampier","Laterne","Zauberstab"};
+		String [] spielerQuestArray = {"???","???","???","???"};
+		
+			
+		
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//SPIEL
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+			
+			//Rassenauswahl
+			System.out.println("\t\t-------------------------------------------------------------------------------------------------------------------------------------");
+			System.out.println("\t\t\t*****************************************Willkommen im Spiel*****************************************");
+			System.out.println("\t\t\t***Wähle zuerst deinen Spielercharakter aus! Deine ausgewählte Rasse hat besondere Fähigkeiten und ein präferiertes Attribut.***");
+			
+			System.out.println("\n\t\t 1. Orckrieger: ***Deine Angriffe verursachen mehr Schaden und du erhälst mehr Lebenspunkte.***\n"
+					+ "\t\t 2. Elfenschütze: ***Deine Angriffe haben eine Chance auf einen kritischen Treffer, der großen Schaden verursacht.***\n"
+					+ "\t\t 3. Menschenentdecker: ***Du erhählst eine bessere Chance Items zu finden und deine Items haben eine bessere Wirkung.***\n"
+					+ "\t\t 4. Vampierkrieger: ***Du besitzt zusätzlichen Lebensraub, welchem dem Gegner Leben entzieht und deinen Lebenspunkten hinzugefügt wird.***\n"
+					+ "\n\t\t***Hier noch ein wichtiger Tipp:***"
+					+ "\n\t\t***Die Gegner in diesem Spiel sind nicht einfach zu bekämpfen. Flüchten ist eine sehr gute Option,*** "
+					+ "\n\t\t***falls der Gegner zu stark sein sollte!***"
+					+ "\n\t\t***Warte bis du genug Items gefunden hast, um gegen diese Monster zu kämpfen. Und dazu bemerkt:***"
+					+ "\n\t\t***Es wird mit Tränken gehandelt. Also denke vorher nach wie viele Tränke du während des Kampfes trinkst,***"
+					+ "\n\t\t***oder wie viele du beim Handeln verschleuderst, obwohl du sie beim Kampf gebrauchen könntest!***");
+			System.out.println("\t\t-------------------------------------------------------------------------------------------------------------------------------------");
+			
+			//Schleife für die Rassenwahl
+			while(gg)
+			{
+			
+			//Scanner entnimmt dem Spieler die Wahl
+			String rassenWahl = s.nextLine();
+			
+			//Rassenauswahl
+			if(rassenWahl.equalsIgnoreCase("1"))
+			{
+				//ORC
+				System.out.println("\n\t\t***Du hast dich für den Orckrieger entschieden.*** "
+								 + "\n\t\t***Stolz und stark. Deine Angriffe erhalten einen Bonus und deine Lebenspunkte wurden erhöht! Ein Levelaufstieg erhöht den Bouns.***");
+				orc = true;
+				playerRace = "Orc";
+				playerHP = 300;
+				playerAD = 80;
+				geschick = 1;
+				kraft = 5;
+				intelligenz = 1;
+				playerRegeneration = 25; 
+				gg = false;
+			}
+			else if(rassenWahl.equalsIgnoreCase("2"))
+			{
+				//ELF
+				System.out.println("\n\t\t***Du hast dich für den Elfenschützen entschieden.***"
+						+ "\n\t\t***Geschickt und flink im Kampf.***\n\t\t***Deine Angriffe haben eine 15% Chance einen mächtigen Treffer zu landen, der dem Gegner großen Schaden zufügt.***"
+						+ "\n\t\t***Des Weiteren hast du ebenfalls eine Angriffsausweichchance! Ein Levelaufstieg erhöht den Bouns.***");
+				elf = true;
+				playerRace = "Elf";
+				playerHP = 125;
+				playerAD = 65;
+				geschick = 5;
+				kraft = 2;
+				intelligenz = 2;
+				playerKritChance = 15;
+				playerEvadeChance = 20;
+				gg = false;
+			}
+			else if(rassenWahl.equalsIgnoreCase("3"))
+			{
+				//MENSCH
+				System.out.println("\n\t\t***Du hast dich für den Entdecker entschieden.***"
+						+ "\n\t\t***Intelligent und talentiert im Umgang mit den Items.***\n\t\t***Du findest 2 statt einem Heiltrank. Darüber hinaus sind die Verbesserungen der Heiltränke verstärkt.***"
+						+ "\n\t\t***Und du besitzt einen Hammer, mit dem du deine Items mit den nötigen Materialien verbessern kannst. Ein Levelaufstieg erhöht den Bouns.***");
+				mensch = true;
+				hammer = true;
+				playerRace = "Mensch";
+				playerHP = 155;
+				playerAD = 60;
+				geschick = 1;
+				kraft = 2;
+				intelligenz = 1;
+				potionMaxAnzahl += 5;
+				potionHeal =+ 75;
+				potionChance = 90;
+				itemChance = 100;
+				dunkelKristallChance =+ 15;
+				gg = false;
+			}
+			else if(rassenWahl.equalsIgnoreCase("4"))
+			{
+				//VAMPIER
+				System.out.println("\n\t\t***Du hast dich für den Vampier entschieden."
+								 + " Deine Angriffe besitzen nun einen Lebensraubeffekt.***\n\t\t***Deine Angriffe werden dich heilen. Ein Levelaufstieg erhöht den Bouns.***");
+				vampier = true;
+				playerRace = "Vampier";
+				playerHP = 250;
+				playerAD = 85;
+				geschick = 5;
+				kraft = 3;
+				intelligenz = 5;
+				playerLebensraub = 0.20;
+				dunkelKristallAnzahl ++;
+				gg = false;
+			}
+			//Bei ungültiger Eingabe kommt ein Fehler
+			else 
+			{
+				System.out.println("\n\t\t***Du hast keine gültige Nummer eingegeben.***"
+								 + "\n\t\t***Du hast die Wahl zwischen [1]Orc [2]Elf [3]Mensch [4]Vampier.***");
+			}
+		}
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		//GAME LOOP
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		GAME:
+			//Endlosschleife für das Spiel
+		while(gameRunning)
+		{
+			//Falls Spieler 0 Leben hat
+			if(playerHP <= 0)
+			{
+				System.out.println("\n\t\t***Das Spiel ist vorbei. Dein Leben beträgt " + playerHP + ". Versuche ein neues Spiel.***");
+				System.exit(0);
+			}
+			
+			if(playerHP > maxLeben)
+			{
+				playerHP = 9999;
+			}
+			
+			//Fähigkeiten die bei ausreichend erhaltenen Attributen freigeschaltet werden
+			if(kraft == 10 && !schadenVerringern)
+			{
+				schadenVerringern = true;
+				skillZahl++;
+				spielerSkills [0] = "Wiederstandsfähigkeit(Gelernt): Du erhälst 10% weniger Schaden.";
+				System.out.println("\n\t\t***FÄHIGKEIT ERLERNT***" +
+								   "\n\t\t***||Da du nun genug Kraftpunkte hast, hat dein Charakter eine neue Fähigkeit gelernt.|| (+ 10% Wiederstandsfähigkeit)***");
+			}
+			if(intelligenz == 10 && !flüchten)
+			{
+				flüchten = true;
+				skillZahl++;
+				spielerSkills [1] = "Erfolgreiche Flucht(Gelernt): Deine Chance zu flüchten liegt bei 100%.";
+				spielerFluchtchance = 100;
+				System.out.println("\n\t\t***FÄHIGKEIT ERLERNT***" +
+								   "\n\t\t***||Da du nun genug Intelligenzpunkte gesammelt hast, kannst du jetzt immer erfolgreich flüchten.||(gilt auch gegen den dunklen Elfen)***");
+			}
+			if(geschick >= 10 && intelligenz >= 10 && playerLevel >= 5 && !stehlen)
+			{
+				stehlen = true;
+				skillZahl++;
+				spielerSkills [2] = "Stehlen(Gelernt): Bei jedem Händlerbesuch stiehlst du dem Händler einen Heiltrank.";
+				System.out.println("\n\t\t***FÄHIGKEIT ERLERNT***" + 
+								   "\n\t\t***||Du bist nun geschickt und intelligent genug um die Fähigkeit 'stehlen' zu erlernen!||***"
+								 + "\n\t\t*** Bei jedem Besuch des Händlers, stiehlst du ihm einen Heiltrank.***");
+			}
+			if(playerLevel >= 4 && !extraTaschen )
+			{
+				extraTaschen = true;
+				skillZahl++;
+				spielerSkills [3] = "Extra Taschen(Gelernt): Du kannst 5 Heiltränke mehr tragen.";
+				potionMaxAnzahl += 5;
+				System.out.println("\n\t\t***FÄHIGKEIT ERLERNT***" +
+								   "\n\t\t***||Du hast extra große Taschen. Du kannst nun 5 Heiltränke mehr tragen.||***");
+			}
+			if(playerLevel >= 6 && !extraLeben )
+			{
+				extraLeben = true;
+				skillZahl++;
+				spielerSkills [4] = "Heiltrankstärke(Gelernt): Deine Heiltränke heilen dich um 75 mehr.";
+				potionHeal += 75;
+				System.out.println("\n\t\t***FÄHIGKEIT ERLERNT***" +
+								   "\n\t\t***||Deine Heiltränke geben dir nun mehr Leben.||***");
+			}
+			if(playerLevel >= 7 && !glück )
+			{
+				glück = true;
+				skillZahl++;
+				spielerSkills [5] = "Glückspilz(Gelernt): Deine Chancen Items auf Wegen zu finden, ist stärker";
+				itemChance = 100;
+				System.out.println("\n\t\t***FÄHIGKEIT ERLERNT***" +
+								   "\n\t\t**||Heute ist dein Glückstag. Deine Chance Items auf dem Weg zu finden steigt auf 100%.||***");
+			}
+			
+			//Spielerausgangspunkt
+			//Der Spieler erhält jede Runde diese Ausgabe
+			System.out.println("\n\t\t***Spielerstatus:***"
+							 + "\n\t\tSpielerlevel: " + playerLevel + " \n\t\tSpielerleben: " + playerHP + " HP" + "\n\t\tSpielerangriffskraft: " + playerAD + " AD" +"\n\t\tAnzahl an Heiltränken: " + potionAnzahl + " \n\t\tAnzahl an Dunkelkristalle: " + dunkelKristallAnzahl
+							 + "\n\n\t\t***Welchen Weg möchtest du gehen?***\n"
+							 + "\t\t***[Norden] [Osten] [Westen]***\n" //Auswahl der Wege, die er gehen kann
+							 + "\n\t\t***||Spielerstatistik aufrufen (S)||***" //Spielerdetails werden ausgegeben wie Chance auszuweichen etc.
+							 + "\n\t\t***||Itemliste ansehen (E)(Ein Fenster öffnet sich)||***"
+							 + "\n\t\t***||Quests anzeigen mit (Q)||***"
+							 + "\n\t\t***||Zusatzfähigkeiten (F)||***");
+			System.out.println("\t\t-------------------------------------------------------------------------------------------------------------------------------------");
+			
+			//Der Spieler gibt hier seine Wahl an
+			String playerWeg = s.nextLine();
+			
+			//Spielerdetails
+			if(playerWeg.equalsIgnoreCase("S"))
+					{
+						System.out.println("\n\t\t***Spielerstatistik:*** " + 
+							"\n\t\tSpielerrasse: " + playerRace + 
+							"\n\t\tSpielerattribute: Kraft (" + kraft + ") Geschick (" + geschick + ") Intelligenz (" + intelligenz + ")" +
+							"\n\t\tSpielerlevel: " + playerLevel + 
+							"\n\t\tSpielererfahrung: " + playerXP + "/100 XP" +
+							"\n\t\tSpielerleben: " + playerHP + " HP" +
+							"\n\t\tSpielerangriffskraft: " + playerAD + " AD" + 
+							"\n\t\tChance auf kritischen Treffer: " + playerKritChance + "%" + 	
+							"\n\t\tChance Angriffen auszuweichen: " + playerEvadeChance + "%" +
+							"\n\t\tChance einen Heiltrank zu finden: " + potionChance + "%" +
+							"\n\t\tChance einen Kristall zu finden: " + dunkelKristallChance + "%" + 
+							"\n\t\tLebensraubbonus: " + playerLebensraub * 100 + "%" + 
+							"\n\t\tRegenerationsbonus: " + playerRegeneration + " HP pro Kampfrunde" +
+							"\n\t\tAnzahl an Heiltränken: " + potionAnzahl + 
+							"\n\t\tAnzahl an Dunkelkristalle: " + dunkelKristallAnzahl +
+							"\n\t\tAnzahl an Schlüsselfragmenten: " + schlüsselAnzahl +"/5");
+					}
+			
+			//Itemfenster wird geöffnet
+			else if(playerWeg.equalsIgnoreCase("E"))
+			{
+				new ItemListe();
+				
+				System.out.println("\n\t\t***Anzahl an Items im Inventar: " + itemZahl + "/13***");
+			}
+			else if(playerWeg.equalsIgnoreCase("Q"))
+			{
+				System.out.println("\n\t\t***Deine Quests:***");
+				
+				for(String meineQuest : spielerQuestArray)
+				{
+					System.out.println("\t\t" + meineQuest);
+				}
+				
+				System.out.println("\n\t\t***Anzahl an offenen Quests: " + questZahl + "***");
+			}
+			else if(playerWeg.equalsIgnoreCase("F"))
+			{
+				System.out.println("\n\t\t***Deine Fähigkeiten:***");
+				
+				for(String meineFähigkeiten : spielerSkills)
+				{
+					System.out.println("\t\t" + meineFähigkeiten);
+				}
+				
+				System.out.println("\n\t\t***Anzahl an gelernten Fähigkeiten: " + skillZahl + "/6***");
+			}
+			
+			//Weg des Spielers wird per Zufall entnommen
+			else if(playerWeg.equalsIgnoreCase("Norden") || playerWeg.equalsIgnoreCase("Osten") || playerWeg.equalsIgnoreCase("Westen") || playerWeg.equalsIgnoreCase("w"))
+			{
+				System.out.println("\t\t***Deine Reise führt dich nach " + playerWeg + "***");
+				
+				//Aus dem wegArray wird ein Zufälliger String entnommen. Der String ist dann der Weg
+				String weg = wegArray[r.nextInt(wegArray.length)];
+				
+				//Felsweg erhöht die Kraft (Heiltrank und Kristall können gefunden werden)
+				if(weg.equalsIgnoreCase("Felsweg"))
+				{
+						kraft ++;
+						System.out.println("\n\t\t***FELSWEG***" +
+										   "\n\t\t***Ein riesiger Fels versperrt dir den Weg. Mit genug Kraft bewegst du den Fels weg.***"
+								 		 + "\n\t\t***Diese Erfahrung hat dich etwas kräftiger gemacht. Kraft: " + kraft + ".***");
+						
+						//HEILTRANK
+						if(r.nextInt(100) + 1 <= potionChance && potionMaxAnzahl > potionAnzahl)
+						{
+							if(mensch || formgestallt)
+							{
+								potionAnzahl += 2;
+								System.out.println("\t\t***Du hast 2 Heiltränke gefunden. Anzahl an Heiltränken: " + potionAnzahl + ".***");
+							}
+							else
+							{
+								potionAnzahl ++;
+								System.out.println("\t\t***Du hast einen Heiltrank gefunden. Anzahl an Heiltränken: " + potionAnzahl + ".***");
+							}
+						}
+							//DUNKELKRALL
+							if(r.nextInt(100) + 1 <= dunkelKristallChance)
+							{
+								dunkelKristallAnzahl ++;
+								System.out.println("\t\t***Du hast einen verzauberten Kristall auf dem Weg gefunden.***\n\t\t***Seine Macht wird dir nützlich sein. Anzahl an Dunkelkristalle: " + dunkelKristallAnzahl + ".***");
+							}
+				}
+				//Bibliothek erhöht die Intelligenz (Heiltrank und Kristall können gefunden werden)
+				else if(weg.equalsIgnoreCase("Bibliothek"))
+				{
+					intelligenz ++;
+					System.out.println("\n\t\t***BIBLIOTHEK***" +
+									   "\n\t\t***Du hast eine Bibliothek gefunden.***"
+									 + "\n\t\t***Deine Zeit in der Bibliothek hat deine Intelligenz gesteigert. Intelligenz: " + intelligenz + ".***");
+					
+					//HEILTRANK
+					if(r.nextInt(100) + 1 <= potionChance && potionMaxAnzahl > potionAnzahl)
+					{
+						if(mensch || formgestallt)
+						{
+							potionAnzahl += 2;
+							System.out.println("\t\t***Du hast 2 Heiltränke gefunden. Anzahl an Heiltränken: " + potionAnzahl + ".***");
+						}
+						else
+						{
+							potionAnzahl ++;
+							System.out.println("\t\t***Du hast einen Heiltrank gefunden. Anzahl an Heiltränken: " + potionAnzahl + ".***");
+						}
+					}
+						//DUNKELKRALL
+						if(r.nextInt(100) + 1 <= dunkelKristallChance)
+						{
+							dunkelKristallAnzahl ++;
+							System.out.println("\t\t***Du hast einen verzauberten Kristall auf dem Weg gefunden.***\n\t\t***Seine Macht wird dir nützlich sein. Anzahl an Dunkelkristalle: " + dunkelKristallAnzahl + ".***");
+						}
+				}
+				//Schießstand erhöht die Geschicklichkeit (Heiltrank und Kristall können gefunden werden)
+				else if(weg.equalsIgnoreCase("Schießstand"))
+				{
+					geschick++;
+					System.out.println("\n\t\t***SCHIEßSTAND***" +
+									   "\n\t\t***Du hast einen Schießstand gefunden.***"
+									 + "\n\t\t***Das Training auf dem Schießstand hat deine Geschicklichkeit gefördert. Geschick: " + geschick + ".***");
+					
+					//HEILTRANK
+					if(r.nextInt(100) + 1 <= potionChance && potionMaxAnzahl > potionAnzahl)
+					{
+						if(mensch || formgestallt)
+						{
+							potionAnzahl += 2;
+							System.out.println("\t\t***Du hast 2 Heiltränke gefunden. Anzahl an Heiltränken: " + potionAnzahl + ".***");
+						}
+						else
+						{
+							potionAnzahl ++;
+							System.out.println("\t\t***Du hast einen Heiltrank gefunden. Anzahl an Heiltränken: " + potionAnzahl + ".***");
+						}
+					}
+						//DUNKELKRALL
+						if(r.nextInt(100) + 1 <= dunkelKristallChance)
+						{
+							dunkelKristallAnzahl ++;
+							System.out.println("\t\t***Du hast einen verzauberten Kristall auf dem Weg gefunden.***\n\t\t***Seine Macht wird dir nützlich sein. Anzahl an Dunkelkristalle: " + dunkelKristallAnzahl + ".***");
+						}
+				}
+				
+				
+				//KREUZUNG Zufälliger Weg der vom Programm ausgewählt wurde(Heiltänke , Kristalle,Items, Schlüsselfragmente, Quests und Diebe können gefunden werden)
+				else if(weg.equalsIgnoreCase("Kreuzung"))
+				{
+					System.out.println("\n\t\t***KREUZUNG***" +
+									   "\n\t\t***Du bist an eine Kreuzung geraten. Vielleicht findest du hier ja ein paar Items.***"
+									 + "\n\t\t***Die Kreuzung führt dich entweder nach Norden, Osten, oder Westen.***");
+					
+					//HEILTRANK
+					if(r.nextInt(100) + 1 <= potionChance && potionMaxAnzahl > potionAnzahl)
+					{
+						if(mensch || formgestallt)
+						{
+							potionAnzahl += 2;
+							System.out.println("\t\t***Du hast 2 Heiltränke gefunden. Anzahl an Heiltränken: " + potionAnzahl + ".***");
+						}
+						else
+						{
+							potionAnzahl ++;
+							System.out.println("\t\t***Du hast einen Heiltrank gefunden. Anzahl an Heiltränken: " + potionAnzahl + ".***");
+						}
+					}
+						//DUNKELKRALL
+						if(r.nextInt(100) + 1 <= dunkelKristallChance)
+						{
+							dunkelKristallAnzahl ++;
+							System.out.println("\t\t***Du hast einen verzauberten Kristall gefunden.***\n\t\t***Seine Macht wird dir nützlich sein. Anzahl an Dunkelkristalle: " + dunkelKristallAnzahl + ".***");
+						}
+						
+							//QUESTS
+							if(r.nextInt(100) + 1 <= questChance)
+							{
+								//Per Zufall wird die Quest aus dem Array genommen
+								String quest = questArray[r.nextInt(questArray.length)];
+								
+								//SchlüsselQuest
+								if(quest.equalsIgnoreCase("Schlüssel") || quest.equalsIgnoreCase("Laterne"))
+								{
+									//Falls er den Schlüssel gefunden hat 
+									if(stadtSchlüssel && !stadtSchlüsselBeendet && stadtSchlüsselAngefangen)
+									{
+										System.out.println("\n\t\t***|||QUEST BEENDET|||***"
+														 + "\n\t\t***Der Mann mit dem Anzug ist wieder an einer Kreuzung. Offenbar hat er weitergesucht.***"
+														 + "\n\t\t'Oh was sehe ich denn da? Ist das da etwa mein Schlüssel? Na endlich! Ich danke euch. Hier, nehmt das für eure Bemühungen.'"
+														 + "\n\t\t***Eine Tasche für extra Platz erhalten. Jetzt kannst du 2 Heiltränke mehr tragen!***\n");
+										potionMaxAnzahl += 2;
+										stadtSchlüsselBeendet = true;
+										spielerQuestArray[0] = "SchlüsselQuest:---Beendet---"; 
+										questZahl--;
+									}
+									//Wenn er den Schlüssel nicht hat UND nicht die Quest hat
+									else if(!stadtSchlüssel && !stadtSchlüsselBeendet && !stadtSchlüsselAngefangen)
+									{
+									System.out.println("\n\t\t***|||QUEST AUFGENOMMEN|||***"
+													 + "\n\t\t***Ein Mann mit Anzug steht an der Kreuzung und sieht ziemlich mitgenommen aus.***"
+													 + "\n\t\t'HALLO!? Sie da!! Ich brauche eure Hilfe! Ich wurde ausgeraubt und ich bin nicht fähig zu kämpfen. Man hat mir den Stadtschlüssel geraubt."
+													 + "\n\t\t Bitte... Wenn ihr den Übeltäter 'Dieb' findet, ihn besiegt und mir meinen Schlüssel wieder zurück bringt, kann ich wieder nach Hause.'"
+													 + "\n\t\t***|||Du hast die Quest 'Schlüssel der Stadt' freigeschaltet! Finde den verlorenen Schlüssel indem du gegen den Dieb kämpfst.|||***\n");
+									
+									stadtSchlüsselAngefangen =  true;
+									spielerQuestArray[0] = "Schlüssel der Stadt: Versuche den verlorenen Schlüssel für den Mann im Anzug zu finden, indem du den Gegner 'Dieb' besiegst.";
+									questZahl++;
+									}
+								}
+								//VampierknochenQuest
+								if(quest.equalsIgnoreCase("Vampier") || quest.equalsIgnoreCase("Zauberstab"))
+								{
+									//Falls er den Vampierknochen gefunden hat 
+									if(vampierKnochen && !vampierKnochenBeendet && vampierKnochenAngefangen)
+									{
+										System.out.println("\n\t\t***|||QUEST BEENDET|||***"
+														 + "\n\t\t***Der Alchemist steht wieder an der Kreuzung. Er scheint verzweifelt zu sein.***"
+														 + "\n\t\t'Oh du meine Güte! Du hast die Vampierknochen! Danke vielmals für deine Bemühungen! Hier, iss diese Heiltrankwurzel'."
+														 + "\n\t\t***Du hast die Heiltrankwurzel gegessen... Nun erhöht sich der Heilungseffekt deiner Tränke!***\n");
+										potionHeal += 50;
+										vampierKnochenBeendet = true;
+										spielerQuestArray[1] = "Vampierknochen:---Beendet---"; 
+										questZahl--;
+									}
+									//Wenn er den Vampierknochen nicht hat UND nicht die Quest hat
+									else if(!vampierKnochen && !vampierKnochenBeendet && !vampierKnochenAngefangen)
+									{
+									System.out.println("\n\t\t***|||QUEST AUFGENOMMEN|||***"
+													 + "\n\t\t***Ein alter Mann ist dir begegnet. Es scheint er wolle dir etwas mitteilen.***"
+													 + "\n\t\t'Guten Tag, junger " + playerRace + ". Würdet ihr einem alten Alchemisten einen Gefallen tun und für mich die fehlende Zutat besorgen?"
+													 + "\n\t\t Ich bräuchte als letzte Zutat die Knochen eines Vampieres. Falls ihr gegen einen Vampier kämpft, bringt mir seine Knochen.'"
+													 + "\n\t\t***|||Du hast die Quest 'Vampierknochen' freigeschaltet! Besiege einen Vampier und gebe dem Alchemisten die Knochen!|||***\n");
+									
+									vampierKnochenAngefangen = true;
+									spielerQuestArray[1] = "Vampierknochen: Versuche einen Vampier zu finden, zu töten und ihm die Knochen zu stehlen.";
+									questZahl++;
+									}
+								}
+							}
+							//ITEMS
+							if(r.nextInt(100) + 1 <= itemChance)
+							{
+								String item = itemArray[r.nextInt(itemArray.length)];
+								
+								if(item.equalsIgnoreCase("Metallstück"))
+								{
+									if(hammer)
+									{
+										playerAD += 20;
+										System.out.println("\t\t***Du hast ein Metallstück gefunden. Da du den Hammer besitzt, kannst du nun das Metallstück in deine Waffe einbauen,***"
+														 + "\n\t\t***wodurch du nun eine Angriffskraft von " + playerAD + " besitzt!***");
+									}
+									else if(!hammer)
+									{
+										System.out.println("\t\t***Du hast ein Metallstück gefunden. Leider kannst du damit nichts anfangen. Du bräuchtest einen Hammer, um deine Waffe zu verbessern.***");
+									}
+								}
+								if(item.equalsIgnoreCase("Rüstung"))
+								{
+									playerHP += 50;
+									if(playerHP > maxLeben)
+									{
+										playerHP = 9999;
+									}
+									System.out.println("\t\t***Du hast eine solide Rüstung gefunden, wodurch du nun Lebenspunkte in Höhe von " + playerHP + " besitzt!***");
+								}
+								if(item.equalsIgnoreCase("Handschuhe"))
+								{
+									playerKritChance += 10;
+									System.out.println("\t\t***Du hast Zauberhandschuhe gefunden, wodurch deine Chance einen kritischen Treffer zu erzielen auf " + playerKritChance + "% gestiegen ist!***");
+								}
+								if(item.equalsIgnoreCase("Schuhe"))
+								{
+									playerEvadeChance += 10;
+									System.out.println("\t\t***Du hast Geschicklichkeitsschuhe gefunden, wodurch du nun eine Angriffsausweichchance von " + playerEvadeChance + "% besitzt!***");
+								}
+								if(item.equalsIgnoreCase("Vampierzahn"))
+								{
+									playerLebensraub += 0.15;
+									System.out.println("\t\t***Du hast einen verfluchten Vampierzahn gefunden, wodurch du nun einen Lebensraubbonus besitzt!***");
+								}
+								if(item.equalsIgnoreCase("Hasenpfote"))
+								{
+									potionHeal += 50;
+									System.out.println("\t\t***Du hast eine verzauberte Hasenpfote gefunden. Deine Heiltränke sind viel stärker!***");
+								}
+								if(item.equalsIgnoreCase("Teil eines Zauberkompass"))
+								{
+									dunkelKristallChance += 5;
+									System.out.println("\t\t***Du hast einen Teil eines verzauberten Kompass gefunden! Er wird dir sicherlich Glück bringen!***");
+								}
+								if(item.equalsIgnoreCase("Schlüssel") && schlüssel)
+								{
+									schlüsselAnzahl++;
+									if(schlüsselAnzahl < 5)
+									{
+										System.out.println("\t\t***Du hast ein Schlüsselfragment gefunden. Anzahl an Fragmenten: "+ schlüsselAnzahl +".***");
+									}
+									else if(schlüsselAnzahl == 5)
+									{
+										System.out.println("\t\t***Du hast das letzte Schlüsselfragment gefunden. Jetzt brauchst du nur noch die Truhe.***");
+										schlüssel = false;
+									}
+								}
+								if(item.equalsIgnoreCase("Raub"))
+								{
+									if(potionAnzahl > 0)
+									{
+										if(potionAnzahl <= 5 && potionAnzahl > 0)
+										{
+											potionAnzahl--;
+											System.out.println("\t\t***||Eine Koboldbande hat sich auf dich gestürzt und haben dir einen Heiltrank gestohlen!!||***");
+										}
+										else if(potionAnzahl <= 10 && potionAnzahl > 5)
+										{
+											potionAnzahl -= 3;
+											System.out.println("\t\t***||Eine Koboldbande hat sich auf dich gestürzt und haben dir 3 Heiltränke gestohlen!!||***");
+										}	
+										else if(potionAnzahl <= 15 && potionAnzahl > 10)
+										{
+											potionAnzahl -= 7;
+											System.out.println("\t\t***||Eine Koboldbande hat sich auf dich gestürzt und haben dir 7 Heiltränke gestohlen!!||***");
+										}
+									}
+								}
+							}
+							
+				continue GAME;
+				}
+				
+				//TUNNEL Zufälliger Weg der vom Programm ausgewählt wurde(Heiltrank, Kristall,Items, Schlüsselfragment und Diebe können gefunden werden)
+				else if(weg.equalsIgnoreCase("Tunnel"))
+				{
+					System.out.println("\n\t\t***TUNNEL***" +
+									   "\n\t\t***Du bist in einen dunklen Tunnel gelaufen. Vielleicht findest du ja ein paar Items.***"
+									 + "\n\t\t***Aus dem Tunnel bist du wieder an eine Kreuzung geraten, die dich entweder nach Norden, Osten, oder Westen führt.***");
+						
+						//HEILTRANK
+						if(r.nextInt(100) + 1 <= potionChance && potionMaxAnzahl > potionAnzahl)
+						{
+							if(mensch || formgestallt)
+							{
+								potionAnzahl += 2;
+								System.out.println("\t\t***Du hast 2 Heiltränke gefunden. Anzahl an Heiltränken: " + potionAnzahl + ".***");
+							}
+							else
+							{
+								potionAnzahl ++;
+								System.out.println("\t\t***Du hast einen Heiltrank gefunden. Anzahl an Heiltränken: " + potionAnzahl + ".***");
+							}
+						}
+							//DUNKELKRALL
+							if(r.nextInt(90) + 1 <= dunkelKristallChance)
+							{
+								dunkelKristallAnzahl ++;
+								System.out.println("\t\t***Du hast einen verzauberten Kristall gefunden.***\n\t\t***Seine Macht wird dir nützlich sein. Anzahl an Dunkelkristalle: " + dunkelKristallAnzahl + ".***");
+							}
+							
+							//QUESTS
+							if(r.nextInt(100) + 1 <= questChance)
+							{
+								//Per Zufall wird die Quest aus dem Array genommen
+								String quest = questArray[r.nextInt(questArray.length)];
+								
+								//LaternenQuest
+								if(quest.equalsIgnoreCase("Laterne") || quest.equalsIgnoreCase("Schlüssel"))
+								{
+									//Falls er die Laterne gefunden hat 
+									if(laterne && !laterneBeendet && laterneAngefangen)
+									{
+										System.out.println("\n\t\t***|||QUEST BEENDET|||***"
+														 + "\n\t\t***Der Tunnelarbeiter ist noch da. Du solltest ihm die Laterne überreichen.***"
+														 + "\n\t\t'Oh! Wie ich sehe habt ihr mir eine Laterne besorgt? Na endlich. Jetzt kann ich endlich wieder richtig arbeiten!"
+														 + "\n\t\t Ich danke euch! Hier, nehmt das für eure Bemühungen. Das habe ich in dem Tunnel gefunden.'"
+														 + "\n\t\t***Dir wurden 2 Dunkelkristalle geschenkt!***\n");
+										dunkelKristallAnzahl += 2;
+										laterneBeendet = true;
+										spielerQuestArray[2] = "LaternenlQuest:---Beendet---"; 
+										questZahl--;
+									}
+									//Wenn er die Laterne nicht hat UND nicht die Quest hat
+									else if(!laterne && !laterneBeendet && !laterneAngefangen)
+									{
+									System.out.println("\n\t\t***|||QUEST AUFGENOMMEN|||***"
+													 + "\n\t\t***Du bermerkst, dass ein Orc mit Spitzhacke und beschmutzter Bekleidung in dem Tunnel beschäftigt ist.***"
+													 + "\n\t\t'Oh guten Tag! Ich bin ein Orctunnelarbeiter. Jedoch sind wir Orcs sehr schlecht mit unseren Augen..."
+													 + "\n\t\t Ich bräuchte eine Laterne, damit ich besser arbeiten kann! Könnt ihr mir vielleicht eine beim Schwerthändler besorgen? Er ist ein guter Freund von mir.'"
+													 + "\n\t\t***|||Du hast die Quest 'Laterne' freigeschaltet! Kaufe eine Laterne beim Schwerthändler.|||***\n");
+									
+									laterneAngefangen =  true;
+									spielerQuestArray[2] = "LaternenQuest: Kaufe eine Laterne beim Orcschwerthändler. Anscheinend kennen sich die beiden Orcs.";
+									questZahl++;
+									}
+								}
+								//Zauberstabquest
+								if(quest.equalsIgnoreCase("Zauberstab") || quest.equalsIgnoreCase("Vampier"))
+								{
+									//Falls er den Zauberstab gefunden hat UND die Quest
+									if(zauberStab && !zauberStabBeendet && zauberStabAngefangen)
+									{
+										System.out.println("\n\t\t***|||QUEST BEENDET|||***"
+														 + "\n\t\t***Der Lehrling fuchtelt mit einem Stock herum und spricht Sätze aus einer anderen Welt.***"
+														 + "\n\t\t'Das Leben eines Lehrling ohne Stab ist nicht einfach... Hey! Ist das für mich? Danke! Hier, das Buch ist für dich. Ich hoffe es bringt dich weiter!'"
+														 + "\n\t\t***Du hast das Buch gelesen und eine Menge über deinen Charakter gelernt! Alle deine Attribute sind um 1 gestiegen!***\n");
+										kraft += 1;
+										intelligenz += 1;
+										geschick += 1;
+										zauberStabBeendet = true;
+										spielerQuestArray[3] = "Magierlehrling:---Beendet---"; 
+										questZahl--;
+									}
+									//Wenn er den Zauberstab nicht hat und nicht die Quest hat
+									else if(!zauberStab && !zauberStabBeendet && !zauberStabAngefangen)
+									{
+									System.out.println("\n\t\t***|||QUEST AUFGENOMMEN|||***"
+													 + "\n\t\t***Ein junger Mensch spielt mit einem Stock. Er scheint irgendwelche Zauber zu sprechen.***"
+													 + "\n\t\t'Guten Tag. Ich bin Gandalf, der kleine. Ich möchte einmal ein großer Zauberer werden und irgendwann werden mich alle als 'Gandalf, den Weißen' kennen!"
+													 + "\n\t\t Ich bräuchte dafür aber einen Zauberstab zum Üben.. Könnt ihr mir vielleicht einen besorgen?'"
+													 + "\n\t\t***|||Du hast die Quest 'Magierlehrling' freigeschaltet! Besorge dem kleinen Jungen einen Zauberstab beim dunklen Händler!|||***\n");
+									
+									zauberStabAngefangen = true;
+									spielerQuestArray[3] = "Magierlehrling: Der Lehrling möchte ein Zauberer werden. Kann aber ohne Zauberstab nicht üben. Besorge ihm einen Zauberstab bei dem dunklen Händler.";
+									questZahl++;
+									}
+								}
+							}
+							
+									String item = itemArray[r.nextInt(itemArray.length)];
+									
+									if(item.equalsIgnoreCase("Metallstück"))
+									{
+										if(hammer)
+										{
+											playerAD += 20;
+											System.out.println("\t\t***Du hast ein Metallstück gefunden. Da du den Hammer besitzt, kannst du nun das Metallstück in deine Waffe einbauen,***"
+															 + "\n\t\t***wodurch du nun eine Angriffkraft von " + playerAD + " besitzt!***");
+										}
+										else if(!hammer)
+										{
+											System.out.println("\t\t***Du hast ein Metallstück gefunden. Leider kannst du damit nichts anfangen. Du bräuchtest einen Hammer, um deine Waffen zu verbessern.***");
+										}
+									}
+									if(item.equalsIgnoreCase("Rüstung"))
+									{
+										playerHP += 50;
+										if(playerHP > maxLeben)
+										{
+											playerHP = 9999;
+										}
+										System.out.println("\t\t***Du hast eine solide Rüstung gefunden, wodurch du nun Lebenspunkte in Höhe von " + playerHP + " besitzt!***");
+									}
+									if(item.equalsIgnoreCase("Handschuhe"))
+									{
+										playerKritChance += 10;
+										System.out.println("\t\t***Du hast Zauberhandschuhe gefunden, wodurch deine Chance einen kritischen Treffer zu erzielen auf " + playerKritChance + "% gestiegen ist!***");
+									}
+									if(item.equalsIgnoreCase("Schuhe"))
+									{
+										playerEvadeChance += 10;
+										System.out.println("\t\t***Du hast Geschicklichkeitsschuhe gefunden, wodurch du nun eine Angriffsausweichchance von " + playerEvadeChance + "% besitzt!***");
+									}
+									if(item.equalsIgnoreCase("Vampierzahn"))
+									{
+										playerLebensraub += 0.15;
+										System.out.println("\t\t***Du hast einen verfluchten Vampierzahn gefunden, wodurch du nun einen Lebensraubbonus besitzt!***");
+									}
+									if(item.equalsIgnoreCase("Hasenpfote"))
+									{
+										potionHeal += 50;
+										System.out.println("\t\t***Du hast eine verzauberte Hasenpfote gefunden, wodurch deine Heiltränke nun stärker sind!***");
+									}
+									if(item.equalsIgnoreCase("Teil eines Zauberkompass"))
+									{
+										dunkelKristallChance += 10;
+										System.out.println("\t\t***Du hast einen Teil eines verzauberten Kompass gefunden! Er wird dir sicherlich Glück bringen!***");
+									}
+									if(item.equalsIgnoreCase("Schlüssel") && schlüssel)
+									{
+										schlüsselAnzahl++;
+										if(schlüsselAnzahl < 5)
+										{
+											System.out.println("\t\t***Du hast ein Schlüsselfragment gefunden. Anzahl an Fragmenten: "+ schlüsselAnzahl +"***");
+										}
+										else if(schlüsselAnzahl == 5)
+										{
+											System.out.println("\t\t***Du hast das letzte Schlüsselfragment gefunden. Jetzt brauchst du nur noch die Truhe.***");
+											schlüssel = false;
+										}
+									}
+									if(item.equalsIgnoreCase("Raub"))
+									{
+										if(potionAnzahl > 0)
+										{
+											if(potionAnzahl <= 5 && potionAnzahl > 0)
+											{
+												potionAnzahl--;
+												System.out.println("\t\t***||Eine Koboldbande hat sich auf dich gestürzt und haben dir einen Heiltrank gestohlen!!||***");
+											}
+											else if(potionAnzahl <= 10 && potionAnzahl > 5)
+											{
+												potionAnzahl -= 3;
+												System.out.println("\t\t***||Eine Koboldbande hat sich auf dich gestürzt und haben dir 3 Heiltränke gestohlen!!||***");
+											}	
+											else if(potionAnzahl <= 15 && potionAnzahl > 10)
+											{
+												potionAnzahl -= 7;
+												System.out.println("\t\t***||Eine Koboldbande hat sich auf dich gestürzt und haben dir 7 Heiltränke gestohlen!!||***");
+											}
+										}
+									}
+					continue GAME;
+					}
+				
+				//KÄMPFEN 1 / 3 Wahrscheinlichkeit, dass der Spieler mit einem Monster kämpfen muss.
+				//Beim Sieg gegen einen Gegner erhält er Erfahrung und möglicherweise Heiltränke, Kristalle
+				//Die Gegner sind entweder normale Gegner oder spezielle Gegner mit unterschiedlichen Fähigkeiten
+				else if(weg.equalsIgnoreCase("Kämpfen"))
+				{
+					//Genger HP wird zufällig bis zum Maximumwert ermittelt
+					int gegnerHP = r.nextInt(gegnerMaxHP);
+					//Der Gegner wird per Zufall aus dem GegnerArray genommen
+					String gegner = gegnerArray[r.nextInt(gegnerArray.length)];
+					System.out.println("\n\t\t***Mach dich bereit, denn es wird Zeit zu kämpfen! Der Gegner |" + gegner + "| ist erschienen!***"
+									 + "\n\t\t*************************************************************************************************");
+					
+						//Kampf beginnt
+						//Kampfschleife wird fortgeführt bis der Gegner kein Leben mehr hat
+						while(gegnerHP > 0)
+						{
+							if(playerHP < 0) 
+							{
+								System.out.println("\n\t\t\t\t\t***KAMPF VERLOREN***"
+													+ "Das Programm wird geschloßen");
+								System.exit(0);
+							}
+							 System.out.println("\n\t\t***Dein Leben beträgt: <" + playerHP + "> ***"
+									 		  + "\n\t\t***Das Leben des Gegner's |" +gegner+ "| beträgt: <" + gegnerHP + "> ***");
+				
+							//Spezielle Gegner
+							//
+								//Giftige Spinne (Keine Heiltränke möglich + zusatz Schaden jede Runde)
+								if(gegner.equalsIgnoreCase("giftige Spinne"))
+								{
+									System.out.println("\n\t\t***Die giftige Spinne hat seine Giftsporen überall hin versprüht, sodass du zusätzlichen Schaden erleidest ("+ gegnerSpinnenGift +")***"
+													 + "\n\t\t***und du keine Heiltränke trinken kannst!***");
+									playerHP -= gegnerSpinnenGift;
+								}
+								//Giftige Spinne (Keine Heiltränke möglich + zusatz Schaden jede Runde)
+								if(gegner.equalsIgnoreCase("Steingolem"))
+								{
+									System.out.println("\n\t\t***Der Steingolem hat eine starke Panzerung. Deine Angriffe werden deutlich weniger Schaden verursachen (" + steingolem + "%)***"
+													 + "\n\t\t***Lebensraubeffekte sowie Kritische Treffer sind nicht möglich.***");
+								}
+								//Schwarzer Zauberer (Keine Dunkelkristalle möglich + zusatz Schaden jede Runde)
+								if(gegner.equalsIgnoreCase("schwarzer Zauberer"))
+								{
+									System.out.println("\n\t\t***Der schwarze Zauberer hat einen Fluch auf dich gewirkt! Du erhälst zusätzlich magischen Schaden (" + gegnerZaubererSchden + ")***"
+													 + "\n\t\t***und dunkle Kristalle haben gegen den Zauberer keine Wirkung.***");
+									playerHP -= gegnerZaubererSchden;
+								}
+								//DunkelElf (Fliehen nicht möglich, außer man hat die Fähigkeit 'Flucht' gelernt)
+								if(gegner.equalsIgnoreCase("Dunkelelf"))
+								{
+									System.out.println("\n\t\t***Der verfluchte dunkle Elf ist zu geschickt und wachsam, als dass man vor ihm fliehen könnte.***");
+								}
+								//Geist (Raubt dem Spieler jede Runde leben und heilt sich selbst)
+								if(gegner.equalsIgnoreCase("Geist"))
+								{
+									System.out.println("\n\t\t***Der Geist nimmt dir jede Runde etwas Leben weg (" + gegnerGeistLebensraub + ") und heilt sich selbst damit.***");
+									playerHP -= gegnerGeistLebensraub;
+									gegnerHP += gegnerGeistLebensraub;
+								}
+								//Göttliches Wesen (Ist immun gegen Angriffe, kann aber selbst nicht angreifen. Hat aber eine 5% Chance dem Spieler 99% Leben wegzunehmen) 
+								if(gegner.equalsIgnoreCase("göttliches Wesen"))
+								{
+									System.out.println("\n\t\t***Das göttliche Wesen ist immun gegen normale Angriffen, ist aber ebenfalls nicht in der Lage anzugreifen. Besiege es mit einem Dunkelkristall, oder flüchte.***");
+									if(r.nextInt(100) + 1 < 5)
+									{
+										playerHP = 1;
+										System.out.println("\n\t\t***|||Das Wesen bewegt sich und richtet seinen Blick nach oben. Du fühlst dich irgendwie komisch...***"
+														 + "\n\t\t***Deine ganzen Lebenspunkte wurden dir weggenommen. Du hast noch 1 Lebenspunkt!***");
+									}
+								}
+								//Verbannter (Jede Runde wird berechnet, ob er seinen kritischen Schaden vollendet, falls nicht verliert er Leben)
+								if(gegner.equalsIgnoreCase("Verbannter"))
+								{
+									System.out.println("\n\t\t***Der Verbannte ist ein mächtiger Gegner, der jede Runde einen verheerenden Zauber ausführt.***"
+												 	 + "\n\t\t***Wird dieser Zauber erfolgreich ausgeführt, erhälst du immensen Schaden! Wahrscheinlichkeit (" + gegnerVerbanntChance + "%).***");
+									//Falls Zauber erfolgreich
+									if(r.nextInt(100) + 1 < gegnerVerbanntChance)
+									{
+										System.out.println("\n\t\t***Der Zauber wurde erfolgreich durchgeführt. Du erhälst Schaden in Höhe von " + gegnerVerbanntSchaden + " Punkten!***");
+										playerHP -= gegnerVerbanntSchaden;
+										//Falls der Spieler weniger als 0 Leben hat verliert, trinkt er alle seine Tränke um zu überleben
+										if(playerHP < 0)
+										{
+											System.out.println("\t\t***Der Zauber des Verbannten hat einen immensen Schaden verursacht. Leben: " + playerHP + "***!"
+															 + "\n\t\t***Aber nichts ist verloren! Solange der Verbannte seine Kräfte aufladen muss, kannst du währenddessen***"
+															 + "\n\t\t***all deine Tränke trinken.***");
+											
+											int heilungbewirkt = potionAnzahl * potionHeal;
+											playerHP += heilungbewirkt;
+											if(playerHP > maxLeben)
+											{
+												playerHP = 9999;
+											}
+											System.out.println("\n\t\t***Heilung gewirkt: " + heilungbewirkt + ". SpielerLeben: " + playerHP + ".***");
+											potionAnzahl = 0;
+										}
+									}
+									//Falls Zauber des Verbannten nicht erfolgreich war, verliert er Leben
+									else
+									{
+										gegnerHP -= gegnerVerbanntStrafe;
+										System.out.println("\n\t\t***Der Verbannte hat seinen Zauber nicht erfolgreich beendet und erhält zusätzlichen Schaden.***"
+														 + "\n\t\t***Lebenspunkte des Verbannten: " + gegnerHP + ".***");
+										//Falls der Vebannte sich selbst getötet hat
+										if(gegnerHP < 0)
+										{
+											System.out.println("\n\t\t***Der Verbannte hat sich selbst getötet.***");
+											break;
+										}
+									}
+								}
+								
+							//Kampfanfrage Jede Kampfrunde wird das ausgegeben und nach dem nächsten Zug des Spielers gefragt
+							System.out.print("\n\t\t*************************************************************************************************"
+								     + "\n\t\t***   Was wirst du jetzt tun?***"
+									 + "\n\t\t***1. Angreifen ("+ playerAD +").***"
+									 + "\n\t\t***2. Heiltrank trinken ("+ potionAnzahl +").***"
+									 + "\n\t\t***3. Flüchten (" + spielerFluchtchance + "%).***"
+									 + "\n\t\t***4. Dunkelkristall einsetzten***("+ dunkelKristallAnzahl +").***"
+									 + "\n\t\t***Leben: Spieler("+ playerHP+ "), Gegner(" + gegnerHP + ").***\n");
+							
+							//falls der Spieler den Ring gekauft hat, schadet er dem Gegner jede Runde
+							if(ring)
+							{
+								gegnerHP -= magieSchaden;
+								System.out.println("\n\t\t***Der magische Ring des verfallenden schwarzen Zauberers, verflucht den Gegner und verursacht jede Runde (" + magieSchaden + ").***");
+							}
+							
+						System.out.println("\t\t-------------------------------------------------------------------------------------------------------------------------------------");
+						//Eingabe des Gegner wird entnommen
+						String wahl = s.nextLine();
+						
+						//ANGREIFEN //Schadensaustausch der gegenseitigen Kontrahenten
+						if(wahl.equals("1")) 
+						{
+							//falls der Gegner kein göttliches Wesen ist, wird Schaden verteilt
+							if(!gegner.equalsIgnoreCase("göttliches Wesen") && !gegner.equalsIgnoreCase("Steingolem"))
+							{
+								//falls der Spieler kritet wird dem Gegner dieser Schaden verursacht
+								if(r.nextInt(100) + 1 <= playerKritChance)
+								{
+									// Gegner leben wird abgezogen
+									gegnerHP -= playerKritAD;
+									System.out.println("\n\t\t***|||Du hast einen kritischen Treffer erzielt!|||*** ");
+									System.out.println("\t\t***Dein Schaden gegen den Gegner |" + gegner +"| beträgt: " + playerKritAD + "!***");
+								}
+								//falls nciht normaler Angriff
+								else
+								{
+										// Schaden wird zufällig bis zum MAX Schaden gerrechnet
+										int gegnerAD = r.nextInt(gegnerMaxAD);
+										
+										// Leben wird weniger
+											gegnerHP -= playerAD;
+												//AusweichChance
+												if(r.nextInt(100) + 1 <= playerEvadeChance)
+												{
+													System.out.println("\n\t\t***|||Du bist dem Angriff ausgewischen!|||***");
+												}
+												//falls der Spieler die Fähigkeit erlernt hat, wird ihm weniger Schaden berechnet 
+												else if(schadenVerringern)
+												{
+													double wenigerSchaden = gegnerAD * 0.1;	//Wird berechnet um wie viel Schaden verringert wird
+													double damage = (gegnerAD - wenigerSchaden); // Wird vom GegnerSchaden abgezogen
+													playerHP -= damage; //wird dem Spieler abgezogen
+													System.out.println("\t\t***|||Durch deine Fähigkeit erhälst du weniger Schaden|||***"
+																	 + "\n\t\t***|||Schaden erhalten: " + damage + "!|||***");	
+												}
+												//ganz normaler Gegnerschaden
+												else
+												{
+													playerHP -= gegnerAD;
+													System.out.println("\t\t***|||Schaden vom Gegner |"+ gegner + "| erhalten: " + gegnerAD + "!|||***");			
+												}
+												
+									// Ausgabe
+									System.out.println("\n\t\t***|||Schaden zugefügt: " + playerAD + "!|||***");
+									
+									// Lebensraub
+									 double lebenGeraubt = playerAD * playerLebensraub;
+									 playerHP += lebenGeraubt;
+									 if(playerHP > maxLeben)
+										{
+											playerHP = 9999;
+										}
+									 System.out.println("\n\t\t***|||Lebensraubeffekt basierend auf Schaden: " + lebenGeraubt + "!|||***");
+									 
+									// Regeneration
+									if(orc || formgestallt)
+									{
+										playerHP += playerRegeneration;
+										if(playerHP > maxLeben)
+										{
+											playerHP = 9999;
+										}
+										System.out.println("\n\t\t***Da du der Orcrasse angehörst, erhälst du jede Runde eine Bonusregeneration (" + playerRegeneration + ")!***");
+									}
+								}
+								
+								//Quest Gegner				
+								//Wenn:		 Gegner = DIEB/VAMPER     Gegner getötet	Spieler hat das Questitem nicht + Hat die Quest angefangen + Hat sie nicht beendet
+								if(gegner.equalsIgnoreCase("Dieb") && gegnerHP <= 0 && !stadtSchlüssel && stadtSchlüsselAngefangen && !stadtSchlüsselBeendet)
+								{
+									System.out.println("\n\t\t***<<<Du hast den Schlüsseldieb getötet und konntest in seinen Taschen den Stadtschlüssel finden!>>>***");
+									stadtSchlüssel = true;
+									spielerQuestArray[0] = "SchlüsselQuest: Du hast den Schlüssel! Nun gib es dem Mann im Anzug zurück.";
+								}
+								if(gegner.equalsIgnoreCase("Vampier") && gegnerHP <= 0 && !vampierKnochen && vampierKnochenAngefangen && !vampierKnochenBeendet)
+								{
+									System.out.println("\n\t\t***<<<Du hast die Vampierknochen dem Vampier entnommen!>>>***");
+									vampierKnochen = true;
+									spielerQuestArray[1] = "VampierQuest: Du hast die letzte Zutat! Jetzt bringe es dem alten Alchemisten.";
+								}
+
+								// Falls HP des Spielers auf 0 oder weniger fällt dann Programm schließen
+								if (playerHP < 1) 
+								{
+									System.out.println("\n\t\t***Du hast nur noch " + playerHP + " Leben. Weiterspielen wird nicht möglich sein.***");
+									System.exit(0);
+								}
+							}
+							//Göttliches Wesen
+							else if(gegner.equalsIgnoreCase("Göttliches Wesen"))
+							{
+								System.out.println("\n\t\t***Deine normalen Angriffe haben keine Wirkung auf das göttliche Wesen.***");
+							}
+							//Steingolem
+							else if(gegner.equalsIgnoreCase("Steingolem"))
+							{
+								// Schaden wird zufällig bis zum MAX Schaden gerrechnet
+								int gegnerAD = r.nextInt(gegnerMaxAD);
+								
+								double steinGolemSchaden = playerAD * (steingolem / 100);
+								gegnerHP -= playerAD - steinGolemSchaden;
+								//AusweichChance
+								if(r.nextInt(100) + 1 <= playerEvadeChance)
+								{
+									System.out.println("\n\t\t***|||Du bist dem Angriff ausgewischen!|||***");
+								}
+								//falls der Spieler die Fähigkeit erlernt hat, wird ihm weniger Schaden berechnet 
+								else if(schadenVerringern)
+								{
+									double wenigerSchaden = gegnerAD * 0.1;	//Wird berechnet um wie viel Schaden verringert wird
+									double damage = (gegnerAD - wenigerSchaden); // Wird vom GegnerSchaden abgezogen
+									playerHP -= damage; //wird dem Spieler abgezogen
+									System.out.println("\t\t***|||Durch deine Fähigkeit erhälst du weniger Schaden|||***"
+													 + "\n\t\t***|||Schaden erhalten: " + damage + "!|||***");	
+								}
+								//ganz normaler Gegnerschaden
+								else
+								{
+									playerHP -= gegnerAD;
+									System.out.println("\t\t***|||Schaden vom Gegner |"+ gegner + "| erhalten: " + gegnerAD + "!|||***");			
+								}
+								System.out.println("\n\t\t***|||Schaden an den Golem verursacht " + (playerAD - steinGolemSchaden) + "|||***");
+							}
+					}
+						//HEILTRANK TRINKEN
+						else if (wahl.equals("2"))
+						{
+							//falls der Gegner keine giftige Spinne ist
+							if(!gegner.equalsIgnoreCase("giftige Spinne"))
+							{
+								//Falls der Gegner noch Heiltränke hat
+								if(potionAnzahl > 0)
+								{
+									// Leben erhöht -- Potanzahl weniger
+									playerHP += potionHeal;
+									if(playerHP > maxLeben)
+									{
+										playerHP = 9999;
+									}
+									potionAnzahl--;
+									
+									System.out.println("\n\t\t***Du hast einen Heiltrank genommen.***" 
+													  +"\n\t\t***Du hast jetzt " + playerHP + " Lebenspuntke.***"
+													 + "\n\t\t***Anzahl an Heiltränken in deinem Inventar: " + potionAnzahl + ".***");
+								}
+								// Falls er keine Pots mehr hat, wird dem Spieler gesagt, dass er keine Heiltränke mehr hat
+								else if (potionAnzahl <= 0)
+								{
+									System.out.println("\n\t\t***Du hast keine Heiltränke mehr.***");
+								}
+							}
+							else if(gegner.equalsIgnoreCase("giftige Spinne"))
+							{
+								System.out.println("\n\t\t***Die giftigen Sporen der Spinne würden den Heiltrank in deinem Körper verseuchen. Trinken nicht möglich.***");
+							}
+						}
+						// FLÜCHTEN
+						else if(wahl.equals("3"))
+						{
+							//wird berrechnet, ob der Fluchtversuch erfolgreich war
+							if(r.nextInt(100) + 1 <= spielerFluchtchance)
+							{
+								//Falls der Gegner kein Dunkelelf ist, kann er flüchten
+								if(gegner.equalsIgnoreCase("Dunkelelf") && !flüchten)
+								{
+									System.out.println("\n\t\t***Der dunkle Elf ist zu geschickt und wachsam. Ein Fluchtversuch ist nicht möglich gegen ihn!***");
+								}
+								else
+								{
+									System.out.println("\n\t\t***|||Du bist vor " + gegner + " geflüchtet!|||***");
+									continue GAME;
+								}
+							}
+							else 
+							{
+								if(gegner.equalsIgnoreCase("göttliches Wesen"))
+								{
+									System.out.println("\n\t\t***Dein Fluchtversuch war leider nicht erfolgreich.***");
+								}
+								else if(!gegner.equalsIgnoreCase("göttliches Wesen"))
+								{
+								// Schaden wird zufällig bis zum MAX Schaden gerrechnet
+								int gegnerAD = r.nextInt(gegnerMaxAD);
+								playerHP -= gegnerAD;
+								System.out.println("\n\t\t***Dein Fluchtversuch war leider nicht erfolgreich.***"
+												 + "\n\t\t***Schaden erhalten: " + gegnerAD + ".");
+								}
+							}
+						}
+						// DUNKELKRISTALL
+						else if(wahl.equals("4"))
+						{
+							//Falls der Gegner kein schwarzer Zauberer ist, dann kann ein Dunkelkristall eingesetzt werden
+							if(!gegner.equalsIgnoreCase("schwarzer Zauberer"))
+							{
+								//falls der Spieler Kristalle hat
+								if(dunkelKristallAnzahl > 0)
+								{
+									gegnerHP -= dunkelKristallAD;
+									dunkelKristallAnzahl--;
+									System.out.println("\n\t\t***Du hast einen Kristall aufgebraucht. Du hast jetzt nur noch " + dunkelKristallAnzahl + " Kristall(e) übrig!*** ");
+										
+									//Quest Gegner				
+									//Wenn:		 Gegner = DIEB/VAMPER     Gegner getötet	Spieler hat das Questitem nicht + Hat die Quest angefangen + Hat sie nicht beendet
+									if(gegner.equalsIgnoreCase("Dieb") && gegnerHP <= 0 && !stadtSchlüssel && stadtSchlüsselAngefangen && !stadtSchlüsselBeendet)
+									{
+										System.out.println("\n\t\t***<<<Du hast den Schlüsseldieb getötet und konntest in seinen Taschen den Stadtschlüssel finden!>>>***");
+										stadtSchlüssel = true;
+										spielerQuestArray[0] = "SchlüsselQuest: Du hast den Schlüssel! Nun gib es dem Mann im Anzug zurück.";
+									}
+									if(gegner.equalsIgnoreCase("Vampier") && gegnerHP <= 0 && !vampierKnochen && vampierKnochenAngefangen && !vampierKnochenBeendet)
+									{
+										System.out.println("\n\t\t***<<<Du hast die Vampierknochen dem Vampier entnommen!>>>***");
+										vampierKnochen = true;
+										spielerQuestArray[1] = "VampierQuest: Du hast die letzte Zutat! Jetzt bringe es dem alten Alchemisten.";
+									}
+								}
+								//Falls der Spieler keineKristalle hat
+								else if (dunkelKristallAnzahl <= 0)
+								{
+									System.out.println("\n\t\t***Du hast keine Kristalle mehr.***");
+								}
+							}
+							else if(gegner.equalsIgnoreCase("schwarzer Zauberer"))
+							{
+								System.out.println("\n\t\t***Es würde keine Wirkung gegen den Zauberer haben!***");
+							}
+						}
+						// Error Eingabe, wenn der Spieler keine richtige Optrion ausgewählt hat 
+						else 
+						{
+							System.err.println("\n\t\t***Keine Zeit dafür! Mach deinen nächsten Schritt!***");
+						}
+							
+					}	
+						//Falls gewonnen wird Erfahrung verteilt und berechnet, ob der Spieler ein Level aufgestiegen ist
+						//Heiltränke und Kristalle können gefunden werden
+						//PLAYERLEVEL
+						int	playerXPErhalten = r.nextInt(playerMaxXP);
+						playerXP += playerXPErhalten;
+						System.out.println("\n\t\t\t\t\t***|||KAMPF GEWONNEN|||***"
+										 + "\n\t\t***||Du hast den Gegner besiegt und erhälst einen Erfahrungsbonus von " + playerXPErhalten + " Punkten!||***" );
+						
+							//falls der Spieler mehr oder gleich 100 Erfahrung gesammelt hat werden seine Statistiken verbessert
+							if(playerXP >= 100)
+							{
+								//SpielerLevel
+								playerLevel ++;
+								kraft++;
+								geschick++;
+								intelligenz++;
+								playerHP += 100;
+								if(playerHP > maxLeben)
+								{
+									playerHP = 9999;
+								}
+								playerAD += 50;
+								playerKritAD += 100;
+								playerXP = 0;
+								
+								//GegnerLevel
+								//normale Gegner
+								gegnerMaxAD += 150;
+								gegnerMaxHP += 400;
+								
+								//spezielle Gegner
+								gegnerSpinnenGift += 60;
+								gegnerZaubererSchden += 65;
+								gegnerGeistLebensraub += 60;
+								gegnerVerbanntChance += 8.5;
+								gegnerVerbanntSchaden += 175;
+								gegnerVerbanntStrafe += 65;
+								steingolem += 9.9;
+							
+								System.out.println("\n\t\t***LEVEL UP***"
+										+ "\n\t\t***|||Gratulation! Du hast das " + playerLevel + "te Level erreicht! Deine Boni und Statistiken wurden verbessert!|||***");
+								
+								//RASSENLEVELUP (Beim Formwandler werden alle Stats verbessert)
+									if(orc || formgestallt)
+									{
+										playerHP += 100;
+										if(playerHP > maxLeben)
+										{
+											playerHP = 9999;
+										}
+										playerAD += 35;
+										playerRegeneration += 25;
+									}
+									if(elf || formgestallt)
+									{
+										playerKritChance += 10;
+										playerEvadeChance += 10;
+									}
+									if(mensch || formgestallt)
+									{
+										kraft++;
+										geschick++;
+										intelligenz++;
+										potionHeal += 50;
+										dunkelKristallChance += 10;
+									}
+									if(vampier || formgestallt)
+									{
+										playerLebensraub += 0.15;
+									}
+							}
+							
+								// Falls sein LVL nicht auf 100 wird gesagt wie viel Erfahrung noch fehlt
+								else if(playerXP < 100)
+								{
+									int fehlendeXP = 100 - playerXP;
+									System.out.println("\t\t***Dir fehlen noch " + fehlendeXP + " Erfahrungspunkte, um dein nächstes Level ("+(playerLevel + 1)+ ") zu erreichen.***");
+								}
+							
+							//HEILTRANK
+							if(r.nextInt(100) + 1 <= potionChance && potionMaxAnzahl > potionAnzahl)
+							{
+								if(mensch || formgestallt)
+								{
+									potionAnzahl += 2;
+									System.out.println("\n\t\t***||Du hast 2 Heiltränke gefunden. Anzahl an Heiltränken: " + potionAnzahl + ".||***");
+								}
+								else
+								{
+									potionAnzahl ++;
+									System.out.println("\n\t\t***||Du hast einen Heiltrank gefunden. Anzahl an Heiltränken: " + potionAnzahl + ".||***");
+								}
+							}
+							//DUNKELKRALL
+							if(r.nextInt(100) + 1 <= dunkelKristallChance)
+							{
+								dunkelKristallAnzahl ++;
+								System.out.println("\n\t\t***||Du hast einen verzauberten Kristall gefunden.||***\n\t\t***Seine Macht wird dir nützlich sein. Anzahl an Dunkelkristalle: " + dunkelKristallAnzahl + ".***");
+							}
+							
+							//Falls der Spieler das 10 Level erreicht hat wird das SPiel beendet und er hat gewonnen
+						if(playerLevel == 10)
+						{
+							gameRunning = false;
+							System.out.println("\n\t\t*****************************************************************************"
+											 + "\n\t\t*****************************************************************************"
+										     + "\n\t\t***Du hast das 10te Level erreicht! Kein Monster kann sich mit dir messen.***"
+											 + "\n\t\t********Das Spiel ist beendet. Gratulation du hast gewonnen!*****************"
+											 + "\n\t\t*****************************************************************************"
+											 + "\n\t\t*****************************************************************************");
+						}
+				}
+				
+				//HANDEL
+				/****************************************************************************************************************************************************************/
+				//SCHWARZHANDEL
+				else if(weg.equalsIgnoreCase("Schwarzhandel"))
+				{
+					
+					System.out.println("\n\t\t\t-DUNKLER HÄNDLER-"
+							+ "\n\t\t***Ein dunkles Wesen aus der Tiefe ist dir begegnet. Sieht nicht aus, als ob es kämpfen will.*** "
+							+ "\n\t\t'Guten Tag, Fremder. Ich bin ein Händler der Nacht. Meine Waren sind dunkle Kristalle und wertvolle magische Items."
+							+ "\n\t\t***1. Ein Dunkelkristall für 8 Heiltränke. (Tötet jeden Gegner)***"
+							+ "\n\t\t***2. Ring eines schwarzen Zauberers für 5 Tränke. (pro Runde Schaden an Gegner (Levelbasierend: " + magieSchaden + ") (Intelligenz: 5))***"
+							+ "\n\t\t***3. Ein Vampierzeptar für 5 Tränke. 				(Erhöht den Lebensraubbonus (+ 30%) (Intelligenz: 4))***"
+							+ "\n\t\t***4. Die Maske eines Formwandlers für 7 Kristalle.(Du wirst zu einem Formwandler und kannst jede Rassengestallt annehmen (Intelligenz: 7))*** "
+							+ "\n\t\t***Q. Beenden.***"
+							+ "\n\t\t***|[1]| |[2]| |[3]| |[4]| |[Q]|***'"
+							+ "\n\t\t***Anzahl der Heiltränke: " + potionAnzahl + "***"
+							+ "\n\t\t***Anzahl an Kristallen: " + dunkelKristallAnzahl +"***"
+							+ "\n\t\t***Spielerattribute: Kraft(" + kraft + ") Geschick(" + geschick + ") Intelligenz(" + intelligenz + ")***");
+					
+					//ZauberStabtQuest
+					if(zauberStabAngefangen && !zauberStab && !zauberStabBeendet)
+					{
+						System.out.println("\n\t\t'Wie bitte? Ihr möchtet ein Zauberer werden, braucht aber noch einen Zauberstab? Ich würde sie dir gerne schenken,"
+										 + "\n\t\t aber ich muss doch damit kämpfen! Hmm... Na gut! Ich gebe sie dir für 2 Heiltränke."
+										 + "\n\t\t***Annehmen?*** [Ja] [Nein]");
+						
+						String zauberStabHandel = s.nextLine();
+						
+							if(zauberStabHandel.equalsIgnoreCase("Ja") || zauberStabHandel.equalsIgnoreCase("J"))
+							{
+								if(potionAnzahl >= 2)
+								{
+									System.out.println("\n\t\t'Hier ist dein Zauberstab. Ich hoffe ihr habt erfolg damit. Willst du vielleicht noch was kaufen?'");
+									zauberStab = true;
+									spielerQuestArray [3] = "Magierlehrling: Du hast den Zauberstab für den Lehrling gekauft. Jetzt musst du dem Lehrling den Zauberstab bringen.";
+								}
+								else
+								{
+									System.out.println("\n\t\t***Du hast nicht genug Heiltränke für diesen Einkauf.***");
+								}
+							}
+							else
+							{
+								System.out.println("\n\t\t'Von mir aus... Willst du vielleicht was anderes kaufen?'");
+							}
+					}
+					
+					
+				//Schleife für den Handel
+				while(true)
+				{
+					System.out.println("\t\t-------------------------------------------------------------------------------------------------------------------------------------"
+									 + "\n\t\t***Drücke Q zum beenden***");
+					String schwarzhandel = s.nextLine();
+						
+					
+					//Dunkelkristall
+					if(schwarzhandel.equalsIgnoreCase("1"))
+					{
+						if(potionAnzahl >= 8)
+						{
+							potionAnzahl -= 8;
+							dunkelKristallAnzahl ++;
+							
+							System.out.println("\n\t\t'Danke für den Handel. Jetzt bist du im Besitzt von " + dunkelKristallAnzahl + " Dunkelkristall(en). "
+											 + "\n\t\t Die Anzahl deiner Heiltränke: " + potionAnzahl + ".");
+						}
+						else
+						{
+							int fehlendeHeiltränke = 8 - potionAnzahl;
+							System.out.println("\n\t\t'Ich sehe du hast nicht genug Heiltränke. Dir fehlen noch " + fehlendeHeiltränke + " Heiltränke.'");
+						}
+					}
+					
+					//ZauberRing
+					if(schwarzhandel.equalsIgnoreCase("2"))
+					{
+						/*Hier wird überprüft ob er 1. Genug Heiltränke hat
+						 *							2. Genug Attribute besitzt 
+						 *							3. den Gegenstand hat
+						 *
+						 *	Falls eins oder mehrer nicht eintreffen kommt eine Fehlermeldung
+						 *	Das Gekaufte Item wird in das ItemArray hinzugefügt 
+						 */
+						if(potionAnzahl >= 5 && intelligenz >= 5 && !ring)
+						{
+							ring = true; 
+							spielerItems[n] = "|Ring des Zauberers| (Magieschaden jede Runde)"; n++;
+							itemZahl++;
+							
+							System.out.println("\n\t\t***Das Item wurde deiner Itemliste hinzugefügt.***");
+							potionAnzahl -= 5;
+							magieSchaden = 50;
+							
+							System.out.println("\n\t\t'Ein sehr weiser Handel. Dein Schaden, jede Runde an deinen Feinden, ist Levelbasierend (" + magieSchaden + ")."
+											 + "\n\t\t Die Anzahl deiner Heiltränke: " + potionAnzahl + ".");
+						}
+						else if(potionAnzahl < 5)
+						{
+							int fehlendeHeiltränke = 5 - potionAnzahl;
+							System.out.println("\n\t\t'Ich sehe du hast nicht genug Heiltränke. Dir fehlen noch " + fehlendeHeiltränke + " Heiltränke.'");
+						}
+						else if(ring)
+						{
+							System.out.println("\n\t\t'Du hast den besagten Gegenstand doch schon in deinem Inventar.'");
+						}
+						else 
+						{
+							System.out.println("\n\t\t'Ich sehe du hast nicht die benötigten Attribute. Komm zurück, wenn du für das Item bereit bist.'");
+						}
+					}
+					
+					//VampierZeptar
+					if(schwarzhandel.equalsIgnoreCase("3"))
+					{
+						/*Hier wird überprüft ob er 1. Genug Heiltränke hat
+						 *							2. Genug Attribute besitzt 
+						 *							3. den Gegenstand hat
+						 *
+						 *	Falls eins oder mehrer nicht eintreffen kommt eine Fehlermeldung
+						 *	Das Gekaufte Item wird in das ItemArray hinzugefügt 
+						 */
+						if(potionAnzahl >= 5 && intelligenz >= 4 && !vampierZeptar)
+						{
+							vampierZeptar = true;
+							
+							spielerItems[n] = "|Vampierzeptar| (Heilung basierend auf Schaden)"; n++;
+							itemZahl++;
+							System.out.println("\n\t\t***Das Item wurde deiner Itemliste hinzugefügt.***");
+							potionAnzahl -= 5;
+							playerLebensraub += 0.5;
+							
+							System.out.println("\n\t\t'Danke für den Handel. Dieser Zeptar war einst die Waffe von Lord Acula. Dein Lebensraubbonus steigt auf " + playerLebensraub * 100 + "%."
+											 + "\n\t\t Die Anzahl deiner Heiltränke: " + potionAnzahl + ".");
+						}
+						else if(potionAnzahl < 5)
+						{
+							int fehlendeHeiltränke = 5 - potionAnzahl;
+							System.out.println("\n\t\t'Ich sehe du hast nicht genug Heiltränke. Dir fehlen noch " + fehlendeHeiltränke + " Heiltränke.'");
+						}
+						else if(vampierZeptar)
+						{
+							System.out.println("\n\t\t'Du hast den besagten Gegenstand doch schon in deinem Inventar.'");
+						}
+						else 
+						{
+							System.out.println("\n\t\t'Ich sehe du hast nicht die benötigten Attribute. Komm zurück, wenn du für das Item bereit bist.'");
+						}
+					}
+					//Maske des Formwandlers
+					if(schwarzhandel.equalsIgnoreCase("4"))
+					{
+						/*Hier wird überprüft ob er 1. Genug Heiltränke hat
+						 *							2. Genug Attribute besitzt 
+						 *							3. den Gegenstand hat
+						 *
+						 *	Falls eins oder mehrer nicht eintreffen kommt eine Fehlermeldung
+						 *	Das Gekaufte Item wird in das ItemArray hinzugefügt 
+						 */
+						if(dunkelKristallAnzahl >= 7 && intelligenz >= 7 && !formwandler)
+						{
+							formwandler = true;
+							spielerItems[n] = "|Maske des Formwandlers| (Jede Rasse freischalten)"; n++;
+							itemZahl++;
+							
+							System.out.println("\n\t\t***Das Item wurde deiner Itemliste hinzugefügt.***");
+							dunkelKristallAnzahl -= 7;
+							formgestallt = true;
+							
+							System.out.println("\n\t\t'Ein sehr weiser Handel. Nun trage die Maske und profitiere von allen Rassenvorteilen!"
+											 + "\n\t\t Die Anzahl deiner Dunkelkristalle: " + dunkelKristallAnzahl + ".");
+						}
+						else if(dunkelKristallAnzahl < 7)
+						{
+							int fehlendeKristalle = 7 - dunkelKristallAnzahl;
+							System.out.println("\n\t\t'Ich sehe du hast nicht genug Heiltränke. Dir fehlen noch " + fehlendeKristalle + " Heiltränke.'");
+						}
+						else if(formwandler)
+						{
+							System.out.println("\n\t\t'Du hast den besagten Gegenstand doch schon in deinem Inventar.'");
+						}
+						else 
+						{
+							System.out.println("\n\t\t'Ich sehe du hast nicht die benötigten Attribute. Komm zurück, wenn du für das Item bereit bist.'");
+						}
+					}
+					
+					//Geschenkter Heiltrank
+					else if(schwarzhandel.equalsIgnoreCase("Q"))
+					{
+						//Falls der Händler die gleiche Rasse hat, erhält der Spieler einen Heiltrank
+						if(elf || vampier || formgestallt)
+						{
+							if(potionAnzahl < potionMaxAnzahl)
+							{
+								potionAnzahl++;
+								System.out.println("\n\t\t'Wie schade. Wie ich sehe, seid ihr ein " + playerRace + ", genau wie ich!"
+												 + "\n\t\t Unsere Vorfahren würden wollen, dass wir uns gegenseitig helfen. Hier nimm einen Heiltrank.'");
+							}
+							else
+							{
+								System.out.println("\n\t\t***Ich würde dir gerne einen Heiltrank schenken. Aber deine Taschen sind leider voll.***");
+							}
+						}
+						break;
+					}
+				}	
+					
+				//Abschied
+				System.out.println("\n\t\t'Vielleicht sehen wir uns bald wieder, junger " + playerRace + ".'");
+				
+					//Stehlen
+					if(stehlen)
+					{
+						if(potionAnzahl < potionMaxAnzahl)
+						{
+							potionAnzahl++;
+							System.out.println("\n\t\t***Auf Grund deiner Fähigkeit 'Stehlen', konntest du dem Händler einen Heiltrank entlocken.***");
+						}
+						else
+						{
+							System.out.println("\n\t\t***Du hast zwar die Fähigkeit zu stehlen, kannst aber keine weiteren Heiltränke mehr tragen.***");
+						}
+					}
+					
+				}
+					/********************************************************************************************************************************************/
+				
+					//RÜSTUNGSHANDEL
+					else if(weg.equalsIgnoreCase("Rüstungshandel"))
+					{
+						System.out.println("\n\t\t\t-RÜSTUNGSHÄNDLER-"
+								+ "\n\t\t***Du hörst die Schläge eines Hammers. Du folgst den Schlägen und triffst einen Schmied. Vielleicht kannst du ja was kaufen?*** "
+								+ "\n\t\t'Hallo junger Wanderer. Ich bin ein Händler und verkaufe solide Rüstung. Meine Ware wird dir zusätzliche Lebenspunkte, oder besondere Fähigkeiten verleihen.'"
+								+ "\n\t\t***1. Eine leichte Rüstung für 3 Heiltränke. (+ 350 Leben -- Benötigt: Kraft : 5 | Geschick : 3)***"
+								+ "\n\t\t***2. Eine schwere Rüstung für 6 Heiltränke.  (+ 650 Leben -- Benötigt: Kraft : 7 | Geschick : 5)***"
+								+ "\n\t\t***3. Elfenhandschuhe für 4 Heiltränke. 	(+ 10% Ausweichchance -- Benötigt: Geschick : 5 | Intelligenz : 3)***"
+								+ "\n\t\t***4. Armreif des Heilers für 5 Heiltränke. (+ 150 auf Heilung von Heiltränken -- Benötigt: Intelligenz : 3)***"
+								+ "\n\t\t***Q. Beenden.***"
+								+ "\n\t\t***|[1]| |[2]| |[3]| |[4]| |[Q]|***"
+								+ "\n\t\t***Anzahl der Heiltränke: " + potionAnzahl + ".***"
+								+ "\n\t\t***Spielerattribute: Kraft(" + kraft + ") Geschick(" + geschick + ") Intelligenz(" + intelligenz + ").***");
+						
+						//Hammer
+						if(!hammer)
+						{
+							hammer = true;
+							spielerItems[n] = "|Hammer| (Metallstücke können Waffen verbessern)"; n++;
+							itemZahl++;
+							System.out.println("\n\t\t'Ich sehe auch, dass du keinen Hammer hast. Du brauchst dieses Werkzeug, um deine Waffen verbessern zu können,"
+											 + "\n\t\t falls du mal über ein Metallstück stolperst. Hier, ich gebe dir einen von meinen. "
+											 + "\n\t\t\t***HAMMER ERHALTEN***"
+											 + "\n\t\t'Nun zu meinem letzten Angebot:'"
+											 + "\n\t\t***|[1]| |[2]| |[3]| |[4]| |[Q]|***'"
+											 + "\n\t\t***Anzahl der Heiltränke: " + potionAnzahl + ".***");
+						}
+						
+						
+					while(true)
+					{
+						System.out.println("\t\t-------------------------------------------------------------------------------------------------------------------------"
+										 + "\n\t\t***Drücke Q zum beenden***");
+						String rustungshandel = s.nextLine();
+						
+							//Leichte Rüstung
+							if(rustungshandel.equalsIgnoreCase("1"))
+							{
+								/*Hier wird überprüft ob er 1. Genug Heiltränke hat
+								 *							2. Genug Attribute besitzt 
+								 *							3. den Gegenstand hat
+								 *
+								 *	Falls eins oder mehrer nicht eintreffen kommt eine Fehlermeldung
+								 *	Das Gekaufte Item wird in das ItemArray hinzugefügt 
+								 */
+								if(potionAnzahl >= 3 && kraft >= 5 && geschick >= 3 && !kleinRüstung)
+								{
+									kleinRüstung = true;
+									spielerItems[n] = "|Leichte Rüstung| (+ 350 Leben)"; n++;
+									itemZahl++;
+									System.out.println("\n\t\t***Das Item wurde deiner Itemliste hinzugefügt.***");
+									potionAnzahl -= 3;
+									playerHP += 350;
+									if(playerHP > maxLeben)
+									{
+										playerHP = 9999;
+									}
+									
+									System.out.println("\n\t\t'Danke für den Handel. Mit dieser kleinen Rüstung erhöhen sich deine Lebenspunkte um " + playerHP + " Punkten."
+													 + "\n\t\t Die Anzahl deiner Heiltränke: " + potionAnzahl + ".");
+								}
+								else if(potionAnzahl < 3)
+								{
+									int fehlendeHeiltränke = 3 - potionAnzahl;
+									System.out.println("\n\t\t'Ich sehe du hast nicht genug Heiltränke. Dir fehlen noch " + fehlendeHeiltränke + " Heiltränke.'");
+								}
+								else if(kleinRüstung)
+								{
+									System.out.println("\n\t\t'Du hast den besagten Gegenstand doch schon in deinem Inventar.'");
+								}
+								else 
+								{
+									System.out.println("\n\t\t'Ich sehe du hast nicht die benötigten Attribute. Komm zurück, wenn du für das Item bereit bist.'");
+								}
+							}
+						
+							//Schwere Rüstung
+							if(rustungshandel.equalsIgnoreCase("2"))
+							{
+								/*Hier wird überprüft ob er 1. Genug Heiltränke hat
+								 *							2. Genug Attribute besitzt 
+								 *							3. den Gegenstand hat
+								 *
+								 *	Falls eins oder mehrer nicht eintreffen kommt eine Fehlermeldung
+								 *	Das Gekaufte Item wird in das ItemArray hinzugefügt 
+								 */
+								if(potionAnzahl >= 6 && kraft >= 7 && geschick >= 5 && !großRüstung)
+								{
+									großRüstung = true;
+									spielerItems[n] = "|Schwere Rüstung| (+650 Leben)"; n++; 
+									itemZahl++;
+									System.out.println("\n\t\t***Das Item wurde deiner Itemliste hinzugefügt.***");
+									potionAnzahl -= 6;
+									playerHP += 650;
+									if(playerHP > maxLeben)
+									{
+										playerHP = 9999;
+									}
+									
+									System.out.println("\n\t\t'Danke für den Handel. Mit dieser großen Rüstung erhöhen sich deine Lebenspunkte um " + playerHP + " Punkten."
+													 + "\n\t\t Die Anzahl deiner Heiltränke: " + potionAnzahl + ".");
+								}
+								else if(potionAnzahl < 6)
+								{
+									int fehlendeHeiltränke = 6 - potionAnzahl;
+									System.out.println("\n\t\t'Ich sehe du hast nicht genug Heiltränke. Dir fehlen noch " + fehlendeHeiltränke + " Heiltränke.'");
+								}
+								else if(großRüstung)
+								{
+									System.out.println("\n\t\t'Du hast den besagten Gegenstand doch schon in deinem Inventar.'");
+								}
+								else 
+								{
+									System.out.println("\n\t\t'Ich sehe du hast nicht die benötigten Attribute. Komm zurück, wenn du für das Item bereit bist.'");
+								}
+							}
+							
+							//Handschuhe
+							if(rustungshandel.equalsIgnoreCase("3"))
+							{
+								/*Hier wird überprüft ob er 1. Genug Heiltränke hat
+								 *							2. Genug Attribute besitzt 
+								 *							3. den Gegenstand hat
+								 *
+								 *	Falls eins oder mehrer nicht eintreffen kommt eine Fehlermeldung
+								 *	Das Gekaufte Item wird in das ItemArray hinzugefügt 
+								 */
+								if(potionAnzahl >= 4 && geschick >= 5 && intelligenz >= 3 && !handschuhe)
+								{
+									handschuhe = true;
+									spielerItems[n] = "|Elfenhandschuhe| (Ausweichchance erhöht)"; n++;
+									itemZahl++;
+									System.out.println("\n\t\t***Das Item wurde deiner Itemliste hinzugefügt.***");
+									potionAnzahl -= 4;
+									playerEvadeChance += 15; 
+									
+									System.out.println("\n\t\t'Danke für den Handel. Mit diesen besonderen Handschuhen sind deine Chance einem Angriff auszuweichen auf " + playerEvadeChance + "% gestiegen."
+													 + "\n\t\t Die Anzahl deiner Heiltränke: " + potionAnzahl + ".");
+								}
+								else if(potionAnzahl < 4)
+								{
+									int fehlendeHeiltränke = 4 - potionAnzahl;
+									System.out.println("\n\t\t'Ich sehe du hast nicht genug Heiltränke. Dir fehlen noch " + fehlendeHeiltränke + " Heiltränke.'");
+								}
+								else if(handschuhe)
+								{
+									System.out.println("\n\t\t'Du hast den besagten Gegenstand doch schon in deinem Inventar.'");
+								}
+								else 
+								{
+									System.out.println("\n\t\t'Ich sehe du hast nicht die benötigten Attribute. Komm zurück, wenn du für das Item bereit bist.'");
+								}
+							}
+							
+							//Armreif
+							if(rustungshandel.equalsIgnoreCase("4"))
+							{
+								/*Hier wird überprüft ob er 1. Genug Heiltränke hat
+								 *							2. Genug Attribute besitzt 
+								 *							3. den Gegenstand hat
+								 *
+								 *	Falls eins oder mehrer nicht eintreffen kommt eine Fehlermeldung
+								 *	Das Gekaufte Item wird in das ItemArray hinzugefügt 
+								 */
+								if(potionAnzahl >= 5 && intelligenz >= 3 && !armreif)
+								{
+									armreif = true;
+									spielerItems[n] = "|Armreif des Heilenden| (Heilung der Tränke erhöht)"; n++;
+									itemZahl++;
+									System.out.println("\n\t\t***Das Item wurde deiner Itemliste hinzugefügt.***");
+									potionAnzahl -= 5;
+									potionHeal += 150;
+									
+									System.out.println("\n\t\t'Danke für den Handel. Mit diesem Armreif eines früheren Heilers, erhöht sich deine Heiltrankstärke auf " + potionHeal + " Punkten."
+													 + "\n\t\t Die Anzahl deiner Heiltränke: " + potionAnzahl + ".");
+								}
+								else if(potionAnzahl < 5)
+								{
+									int fehlendeHeiltränke = 5 - potionAnzahl;
+									System.out.println("\n\t\t'Ich sehe du hast nicht genug Heiltränke. Dir fehlen noch " + fehlendeHeiltränke + " Heiltränke.'");
+								}
+								else if(armreif)
+								{
+									System.out.println("\n\t\t'Du hast den besagten Gegenstand doch schon in deinem Inventar.'");
+								}
+								else 
+								{
+									System.out.println("\n\t\t'Ich sehe du hast nicht die benötigten Attribute. Komm zurück, wenn du für das Item bereit bist.'");
+								}
+							}
+							
+						//Heiltrank schenken	
+						else if(rustungshandel.equalsIgnoreCase("Q"))
+						{
+							//Falls der Händler die gleiche Rasse hat, erhält der Spieler einen Heiltrank
+							if(mensch || formgestallt)
+							{
+								if(potionAnzahl < potionMaxAnzahl)
+								{
+									potionAnzahl++;
+									System.out.println("\n\t\t'Wie schade. Ich sehe du bist ein " + playerRace + "."
+													 + "\n\t\t Wir Menschen müssen zusammen arbeiten! Hier, nimm diesen Heiltrank als Geschenk.'");
+								}
+								else
+								{
+									System.out.println("\n\t\t***Ich würde dir gerne einen Heiltrank schenken. Aber deine Taschen sind leider voll.***");
+								}
+							}
+							break;
+						}
+					}
+							
+						//Abschied
+						System.out.println("\n\t\t'Vielleicht sehen wir uns bald wieder, junger " + playerRace + "'.");
+						
+						//Stehlen
+						if(stehlen)
+						{
+							if(potionAnzahl < potionMaxAnzahl)
+							{
+								potionAnzahl++;
+								System.out.println("\n\t\t***Auf Grund deiner Fähigkeit 'Stehlen', konntest du dem Händler einen Heiltrank entlocken.***");
+							}
+							else
+							{
+								System.out.println("\n\t\t***Du hast zwar die Fähigkeit zu stehlen, kannst aber keine weiteren Heiltränke mehr tragen.***");
+							}
+						}
+					}
+				
+				/***********************************************************************************************************************************************/
+				
+				//Schwerthandel
+				else if(weg.equalsIgnoreCase("Schwerthandel"))
+				{
+				System.out.println("\n\t\t\t-WAFFENHÄNDLER-"
+						+ "\n\t\t***Ein starker Orckrieger kämpft  gegen ein starkes Monster. Du hilfst ihm und rettest damit sein Leben.***"
+						+ "\n\t\t***Er schleppt 100 von Waffen mit sich herum. Vielleicht kannst du ja was von ihm abkaufen?***"
+						+ "\n\t\t'Danke für deine Hilfe junger " + playerRace +". Ich bin ein Waffenhändler bei den Orcstämmen. Möchtest du vielleicht eins kaufen?"
+						+ "\n\t\t Ein Schwert geschmiedet im Feuer von Mordor gibt dir einen guten Angriffsbonus. Ich habe auch die Todesklinge im Sortiment. Sie gibt dir +100000 AD.'"
+						+ "\n\t\t***A. Einen Vampierdolch für 4 Heiltränke.   (+ 35 Angriff -- Benötigt: 3 : Kraft| 4 : Geschick| 2 : Intelligenz)***"
+						+ "\n\t\t***B. Ein Riesen Schwert für 7 Heiltränke.   (+ 75 Angriff -- Benötigt: 7 : Kraft)***"
+						+ "\n\t\t***C. Einen Elfenjagdbogen für 5 Heiltränke. (+ 30 Angriff -- Benötigt: 7 : Geschick)***"
+						+ "\n\t\t***D. Eine Zerstörungsaxt für 8 Heitränke.   (+100 Angriff -- Benötigt:10 : Kraft)***"
+						+ "\n\t\t***E. Angriffsstärke erhöhen lassen. 3 Heiltränke = + 20 Angriffskraft***"
+						+ "\n\t\t***F. Die verzauberte Todesklinge für 15 Dunkelkristalle. -- Benötigt Kraft : 8 | Geschick : 8 | Intelligenz : 8| Level : 8|***"
+						+ "\n\t\t***Q. Beenden***"
+						+ "\n\t\t***[A] [B] [C] [D] [E] [F] [Q]***"
+						+ "\n\t\t***Anzahl der Heiltränke: " + potionAnzahl + ".***"
+						+ "\n\t\t***Anzahl an Dunkelkristalle: " + dunkelKristallAnzahl + ".***"
+						+ "\n\t\t***Spielerattribute: Kraft(" + kraft + ") Geschick(" + geschick + ") Intelligenz(" + intelligenz + ").***");
+					
+					//LaternenQuest
+					if(laterneAngefangen && !laterne && !laterneBeendet)
+					{
+						System.out.println("\n\t\t'Was? Mein Freund Iknan braucht also eine Laterne? Ich würde dir gerne eine schenken,"
+										 + "\n\t\t aber solche Laternen hängen nicht an Bäumen, sondern an fremden Wänden, für die man zahlen muss. Hier, ich gebe sie dir für einen Heiltrank."
+										 + "\n\t\t***Annehmen?*** [Ja] [Nein]");
+						
+						String laternenHandel = s.nextLine();
+						
+							if(laternenHandel.equalsIgnoreCase("Ja") || laternenHandel.equalsIgnoreCase("J"))
+							{
+								if(potionAnzahl >= 1)
+								{
+									System.out.println("\n\t\t'Hier ist deine Laterne. Grüß Iknan von mir. Willst du vielleicht noch was kaufen?'");
+									laterne = true;
+									spielerQuestArray [2] = "Laterne: Du hast die Laterne für Iknan, dem Orctunnelarbeiter. Jetzt musst du sie ihm nur noch überbringen.";
+								}
+								else
+								{
+									System.out.println("\n\t\t***Du hast nicht genug Heiltränke für diesen Einkauf.***");
+								}
+							}
+							else
+							{
+								System.out.println("\n\t\t'Von mir aus. Willst du vielleicht was anderes kaufen?'");
+							}
+					}
+					
+				while(true)
+				{
+					
+					System.out.println("\t\t-------------------------------------------------------------------------------------------------------------------------------------"
+									 + "\n\t\t***Drücke Q zum beenden***");
+						String schwerthandel = s.nextLine();
+							
+							//Vampierdolch
+							if(schwerthandel.equalsIgnoreCase("a"))
+							{
+								/*Hier wird überprüft ob er 1. Genug Heiltränke hat
+								 *							2. Genug Attribute besitzt 
+								 *							3. den Gegenstand hat
+								 *
+								 *	Falls eins oder mehrer nicht eintreffen kommt eine Fehlermeldung
+								 *	Das Gekaufte Item wird in das ItemArray hinzugefügt 
+								 */
+								if(potionAnzahl >= 4 && kraft >= 3 && geschick >= 4 && intelligenz >= 2 && !dolch)
+								{
+									dolch = true;
+									spielerItems[n] = "|Vampierdolch| (+ 35 Angriff und zusatz Lebensraub)"; n++;
+									itemZahl++;
+									System.out.println("\n\t\t***Das Item wurde deiner Itemliste hinzugefügt.***");
+									potionAnzahl -= 4;
+									playerAD += 35;
+									playerLebensraub += 0.3;
+									
+									System.out.println("\n\t\t'Danke für den Handel. Jetzt bist du im Besitz von " + playerAD + " Angriffspunkten. Und besitzt einen Lebensraubeffekt von ("+ playerLebensraub * 100 +"%)!"
+												 	 + "\n\t\t Die Anzahl deiner Heiltränke: " + potionAnzahl + ".");
+								}
+								else if(potionAnzahl < 4)
+								{
+									int fehlendeHeiltränke = 4 - potionAnzahl;
+									System.out.println("\n\t\t'Ich sehe du hast nicht genug Heiltränke. Dir fehlen noch " + fehlendeHeiltränke + " Heiltränke.'");
+								}
+								else if(dolch)
+								{
+									System.out.println("\n\t\t'Du hast den besagten Gegenstand doch schon in deinem Inventar.'");
+								}
+								else 
+								{
+									System.out.println("\n\t\t'Ich sehe du hast nicht die benötigten Attribute. Komm zurück, wenn du für das Item bereit bist.'");
+								}
+							}
+						
+							//Riesenschwert
+							if(schwerthandel.equalsIgnoreCase("b"))
+							{
+								/*Hier wird überprüft ob er 1. Genug Heiltränke hat
+								 *							2. Genug Attribute besitzt 
+								 *							3. den Gegenstand hat
+								 *
+								 *	Falls eins oder mehrer nicht eintreffen kommt eine Fehlermeldung
+								 *	Das Gekaufte Item wird in das ItemArray hinzugefügt 
+								 */
+								if(potionAnzahl >= 7 && kraft >= 7 && !riesenSchwert)
+								{
+									riesenSchwert = true;
+									spielerItems[n] = "|Riesenschwert| (+ 75 Angriff)"; n++;
+									itemZahl++;
+									System.out.println("\n\t\t***Das Item wurde deiner Itemliste hinzugefügt.***");
+									potionAnzahl -= 7;
+									playerAD += 75;
+									
+									System.out.println("\n\t\t'Danke für den Handel. Jetzt bist du im Besitzt von " + playerAD + " Angriffspunkten."
+													 + "\n\t\t Die Anzahl deiner Heiltränke: " + potionAnzahl + ".");
+								}
+								else if(potionAnzahl < 7)
+								{
+									int fehlendeHeiltränke = 7 - potionAnzahl;
+									System.out.println("\n\t\t'Ich sehe du hast nicht genug Heiltränke. Dir fehlen noch " + fehlendeHeiltränke + " Heiltränke.'");
+								}
+								else if(riesenSchwert)
+								{
+									System.out.println("\n\t\t'Du hast den besagten Gegenstand doch schon in deinem Inventar.'");
+								}
+								else 
+								{
+									System.out.println("\n\t\t'Ich sehe du hast nicht die benötigten Attribute. Komm zurück, wenn du für das Item bereit bist.'");
+								}
+							}
+							
+							//Jagdbogen
+							if(schwerthandel.equalsIgnoreCase("c"))
+							{
+								/*Hier wird überprüft ob er 1. Genug Heiltränke hat
+								 *							2. Genug Attribute besitzt 
+								 *							3. den Gegenstand hat
+								 *
+								 *	Falls eins oder mehrer nicht eintreffen kommt eine Fehlermeldung
+								 *	Das Gekaufte Item wird in das ItemArray hinzugefügt 
+								 */
+								if(potionAnzahl >= 5 && geschick >= 7 && !jagdBogen)
+								{
+									jagdBogen = true;
+									spielerItems[n] = "|Jagdbogen der Elfen| (+ 30 Angriff und zusatz Kritchance)"; n++;
+									itemZahl++;
+									System.out.println("\n\t\t***Das Item wurde deiner Itemliste hinzugefügt.***");
+									potionAnzahl -= 5;
+									playerAD += 30;
+									playerKritChance += 10;
+									
+									System.out.println("\n\t\t'Danke für den Handel. Jetzt bist du im Besitzt von " + playerAD + " Angriffspunkten. Und erhälst zusätzliche Kritchance("+ playerKritChance +"%)"
+													 + "\n\t\t Die Anzahl deiner Heiltränke: " + potionAnzahl + ".");
+								}
+								else if(potionAnzahl < 5)
+								{
+									int fehlendeHeiltränke = 5 - potionAnzahl;
+									System.out.println("\n\t\t'Ich sehe du hast nicht genug Heiltränke. Dir fehlen noch " + fehlendeHeiltränke + " Heiltränke.'");
+								}
+								else if(jagdBogen)
+								{
+									System.out.println("\n\t\t'Du hast den besagten Gegenstand doch schon in deinem Inventar.'");
+								}
+								else 
+								{
+									System.out.println("\n\t\t'Ich sehe du hast nicht die benötigten Attribute. Komm zurück, wenn du für das Item bereit bist.'");
+								}
+							}
+							
+							//Zerstörungsaxt
+							if(schwerthandel.equalsIgnoreCase("d"))
+							{
+								/*Hier wird überprüft ob er 1. Genug Heiltränke hat
+								 *							2. Genug Attribute besitzt 
+								 *							3. den Gegenstand hat
+								 *
+								 *	Falls eins oder mehrer nicht eintreffen kommt eine Fehlermeldung
+								 *	Das Gekaufte Item wird in das ItemArray hinzugefügt 
+								 */
+								if(potionAnzahl >= 8 && kraft >= 10 && !axt)
+								{
+									axt = true;
+									spielerItems[n] = "|Zerstörungsaxt| (+100 Angriff)"; n++;
+									itemZahl++;
+									System.out.println("\n\t\t***Das Item wurde deiner Itemliste hinzugefügt.***");
+									potionAnzahl -= 8;
+									playerAD += 100;
+									
+									System.out.println("\n\t\t'Danke für den Handel. Jetzt bist du im Besitzt von " + playerAD + " Angriffspunkten."
+													 + "\n\t\t Die Anzahl deiner Heiltränke: " + potionAnzahl + ".");
+									
+								}
+								else if(potionAnzahl < 8)
+								{
+									int fehlendeHeiltränke = 8 - potionAnzahl;
+									System.out.println("\n\t\t'Ich sehe du hast nicht genug Heiltränke. Dir fehlen noch " + fehlendeHeiltränke + " Heiltränke.'");
+								}
+								else if(axt)
+								{
+									System.out.println("\n\t\t'Du hast den besagten Gegenstand doch schon in deinem Inventar.'");
+								}
+								else 
+								{
+									System.out.println("\n\t\t'Ich sehe du hast nicht die benötigten Attribute. Komm zurück, wenn du für das Item bereit bist.'");
+								}
+							}
+							
+							//Angriffskraft steigern lassen
+							if(schwerthandel.equalsIgnoreCase("e"))
+							{
+								if(potionAnzahl >= 3)
+								{
+									potionAnzahl -= 3;
+									playerAD += 20;
+									System.out.println("\n\t\t'Danke für den Handel. Deine Angriffskraft steigt auf " + playerAD + " Punkten.' ");
+								}
+								else 
+								{
+									int fehlendeHeiltränke = 3 - potionAnzahl;
+									System.out.println("\n\t\t'Ich sehe du hast nicht genug Heiltränke. Dir fehlen noch " + fehlendeHeiltränke + " Heiltränke.'");
+								}
+							}
+							
+							//Todesklinge
+							if(schwerthandel.equalsIgnoreCase("f"))
+							{
+								/*Hier wird überprüft ob er 1. Genug Heiltränke hat
+								 *							2. Genug Attribute besitzt 
+								 *							3. den Gegenstand hat
+								 *							4. das 7 Level erreicht hat
+								 *	Falls eins oder mehrer nicht eintreffen kommt eine Fehlermeldung
+								 *	Das Gekaufte Item wird in das ItemArray hinzugefügt 
+								 */
+								if(dunkelKristallAnzahl >= 15 && playerLevel >= 7 && kraft >= 8 && geschick >= 8 && intelligenz >= 8 && !todesKlinge)
+								{
+									todesKlinge =  true;
+									spielerItems[n] = "|Todesklinge| (Mächtigste Waffe des Spieles)"; n++;
+									itemZahl++;
+									System.out.println("\n\t\t***Das Item wurde deiner Itemliste hinzugefügt.***");
+									dunkelKristallAnzahl -= 15;
+									playerAD += 10000000;
+									playerKritChance -= 100000;
+									System.out.println("\n\t\t'Danke für den Handel. Jetzt bist du im Besitzt der mächtigsten Waffe der Welt! "
+													 + "\n\t\t Deine Gegner haben keine Chance!'");
+								}
+								else if(dunkelKristallAnzahl < 15)
+								{
+									int fehlendeDunkelKristalle = 15 - dunkelKristallAnzahl;
+									System.out.println("\n\t\t'Ich sehe du hast nicht genug Dunkelkristalle. Dir fehlen noch " + fehlendeDunkelKristalle + " Heiltränke.'");
+								}
+								else if(todesKlinge)
+								{
+									System.out.println("\n\t\t'Du bist doch schon im Besitz der Todesklinge. Mächtiger kannst du nicht mehr werden.'");
+								}
+								else 
+								{
+									System.out.println("\n\t\t'Dir fehlt es an Erfahrung und Attributen. Diese Waffe würde dich zerstören.'");
+								}
+							}
+								
+						//Geschenk	
+						else if(schwerthandel.equalsIgnoreCase("Q"))
+						{
+							//Falls der Händler die gleiche Rasse hat, erhält der Spieler einen Heiltrank
+							if(orc || formgestallt)
+							{
+								if(potionAnzahl < potionMaxAnzahl)
+								{
+									potionAnzahl++;
+									System.out.println("\n\t\t'Wie schade. Ich sehe du bist ein " + playerRace + "."
+											 + "\n\t\t Ich bedanke mich für die Hilfe und schenke dir diesen Heiltrank. Mach unseren Klan stolz!'");
+								}
+								else
+								{
+									System.out.println("\n\t\t***Ich würde dir gerne einen Heiltrank schenken. Aber deine Taschen sind leider voll.***");
+								}
+							}
+							break;
+						}
+				}		
+				
+					//Abschied		
+					System.out.println("\n\t\t'Vielleicht sehen wir uns bald wieder, junger " + playerRace + ".'");
+					
+					//Stehlen
+					if(stehlen)
+					{
+						if(potionAnzahl < potionMaxAnzahl)
+						{
+							potionAnzahl++;
+							System.out.println("\n\t\t***Auf Grund deiner Fähigkeit 'Stehlen', konntest du dem Händler einen Heiltrank entlocken.***");
+						}
+						else
+						{
+							System.out.println("\n\t\t***Du hast zwar die Fähigkeit zu stehlen, kannst aber keine weiteren Heiltränke mehr tragen.***");
+						}
+					}
+				}
+				
+				/*************************************************************************************************************************************************/
+				
+				/*TRUHE
+				 * Falls der Spieler alle Schlüsselfragment gesammelt hat, findet er diesen Weg	
+				 * Der Spieler entscheidet, was er mit der Truhe anstellt, Entweder töten oder teilen Beide Varianten geben Bonies
+				 */
+				else if(weg.equalsIgnoreCase("Truhe") && !schlüssel && !schlüsselEnde)
+				{
+					System.out.println("\n\t\t\t-TRUHE-"
+									 + "\n\t\t***Eine geheimnisvolle Frau kommt dir entgegen. Sie trägt eine ungewöhnlich aussehende Truhe mit sich herum.***"
+							 		 + "\n\t\t'Hallo junger " + playerRace +". Ich bin Adire und eine Zauberin. Ich habe diese Truhe in einem verlassenen Gebäude gefunden, kann sie aber leider nicht selbst öffnen."
+									 + "\n\t\t Ich bräuchte eine Art Schlüssel. Kannst du mir vielleicht helfen?'"
+									 + "\n\t\t***Ich hab den Schlüssel hier. [A]***");
+					
+					System.out.println("\t\t-------------------------------------------------------------------------------------------------------------------------------------");
+					String wahl = s.nextLine();
+					
+					if(!schlüssel && wahl.equalsIgnoreCase("a"))
+					{
+								boolean ggg = true;
+								System.out.println("\n\t\t'Du hast den Schlüssel? Gib ihn mir und wir werden den Schatz teilen. Was sagst du dazu?'"
+												 + "\n\t\t***Den Schatz mit der Frau teilen.[R]***"
+												 + "\n\t\t***Die Frau töten und den Schatz selbst nehmen[T]***");
+								
+						while(ggg)
+						{
+							System.out.println("\t\t-------------------------------------------------------------------------------------------------------------------------------------");
+							String teilenTöten = s.nextLine();
+							
+							if(teilenTöten.equalsIgnoreCase("r"))
+							{
+								playerAD += 100;
+								playerHP += 500;
+								if(playerHP > maxLeben)
+								{
+									playerHP = 9999;
+								}
+								System.out.println("\n\t\t***Du hast dich entschieden den Schatz zu teilen. Die Frau öffnet die Truhe und nimmt einen Trank heraus.***"
+												 + "\n\t\t***Sie trinkt die hälfte und gibt dir die andere Hälfte.***"
+												 + "\n\t\t'Ich danke dir für deine Bemühungen. Der Trank wird dir 500 zusätzliche Leben schenken. Und weil du mir geholfen hast,"
+												 + "\n\t\t werde ich dir einen Angriffsbonus von 100 Punkten schenken!'");
+								ggg = false;
+							}
+							else if(teilenTöten.equalsIgnoreCase("t"))
+							{
+								playerHP += 1000;
+								if(playerHP > maxLeben)
+								{
+									playerHP = 9999;
+								}
+								System.out.println("\n\t\t***Du hast dich entschieden die Frau zu töten und den Schatz selbst zu nehmen.***"
+												 + "\n\t\t***Du trinkst den Trank und erhälst +1000 Leben.***");
+								ggg = false;
+							}
+							else 
+							{
+								System.out.println("\n\t\t***Ungültige Antwort. Teilen[T], oder Töten[R]***");
+							}
+						}
+					}
+					schlüsselEnde = true;
+				}
+			}	
+			
+			//Erroransage
+			else
+			{
+				System.err.println("\n\t\t***Wähle bitte deinen nächsten Schritt. Du hast die Wahl zwischen [Norden] [Osten] [Westen].***");
+			}
+			
+		continue GAME;
+		
+		}
+	}
+}
