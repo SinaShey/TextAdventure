@@ -1,0 +1,50 @@
+package game;
+
+import java.awt.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+
+public class ItemListe extends JDialog{
+	private static final long serialVersionUID = 1L;
+		// JList und ScrollPane mit dem Array der Items in der Mainklasse
+		private JList<String> liste = new JList<String>(Main.spielerItems);
+		private JScrollPane scroll = new JScrollPane(liste);
+		
+		private JButton ok = new JButton("OK");
+	
+	public ItemListe ()
+	{
+		//Gui Layout
+		setLayout(new FlowLayout());
+		Box label = Box.createVerticalBox();
+		
+		//Label
+		label.add(new JLabel("***|Gesammelte Items|***"));
+		
+		//Scrollelement*Wird aber nicht gebraucht*
+		scroll.setPreferredSize(new Dimension(350,250));
+		label.add(scroll);
+		
+		add(label);
+		label.add(ok);
+		
+		//Ok button
+		ok.addActionListener(Listener -> dispose());
+		
+		// Backgroundfarbe auf getContentPane(), weil das wichtig ist
+		getContentPane().setBackground(new Color(0,175,255));
+		
+		// Gui settings
+		setTitle("***ItemListe***");
+		setVisible(true);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setSize(400,340);
+		setLocation(850, 300);
+		setResizable(false);
+	}
+}
